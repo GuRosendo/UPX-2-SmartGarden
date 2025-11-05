@@ -17,6 +17,9 @@ public class Institutions{
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private LocalDateTime deletedAt;
+    
+    public Institutions(){
+    }
 
     public Institutions(Long id, Addresses institutionAddress, String institutionName, LocalDateTime createdAt, LocalDateTime updatedAt, LocalDateTime deletedAt){
         this.id = id;

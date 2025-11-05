@@ -5,6 +5,7 @@
 package com.facens.upx2.smartgarden.model.domain;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 /**
  *
@@ -21,6 +22,9 @@ public class Users{
     private LocalDateTime createdAt;
     private LocalDateTime deletedAt; 
     private LocalDateTime updatedAt;
+    
+    public Users(){
+    }
 
     public Users(Long id, Addresses userAddress, Institutions institution, String fullName, String userName, String userEmail, String userPassword, LocalDateTime createdAt, LocalDateTime deletedAt, LocalDateTime updatedAt){
         this.id = id;
@@ -114,6 +118,37 @@ public class Users{
     public void setUpdatedAt(LocalDateTime updatedAt){
         this.updatedAt = updatedAt;
     }
-    
-    
+
+    @Override
+    public int hashCode(){
+        int hash = 7;
+        
+        hash = 23 * hash + Objects.hashCode(this.id);
+        hash = 23 * hash + Objects.hashCode(this.userPassword);
+        
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(this == obj){
+            return true;
+        }
+        
+        if(obj == null){
+            return false;
+        }
+        
+        if(getClass() != obj.getClass()){
+            return false;
+        }
+        
+        final Users other = (Users) obj;
+        
+        if(!Objects.equals(this.userPassword, other.userPassword)){
+            return false;
+        }
+        
+        return Objects.equals(this.id, other.id);
+    }
 }

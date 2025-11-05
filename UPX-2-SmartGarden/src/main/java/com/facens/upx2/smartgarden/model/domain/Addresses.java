@@ -13,8 +13,9 @@ import java.time.LocalDateTime;
 public class Addresses{
     private Long id;
     private String CEP;
-    private String countryName;
-    private String cityName;
+    private Countries country;
+    private States state;
+    private Cities city;
     private String neighborhoodName;
     private String streetName;
     private String number;
@@ -22,12 +23,16 @@ public class Addresses{
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private LocalDateTime deletedAt;
+    
+    public Addresses(){
+    }
 
-    public Addresses(Long id, String CEP, String countryName, String cityName, String neighborhoodName, String streetName, String number, int type, LocalDateTime createdAt, LocalDateTime updatedAt, LocalDateTime deletedAt){
+    public Addresses(Long id, String CEP, Countries country, States state, Cities city, String neighborhoodName, String streetName, String number, int type, LocalDateTime createdAt, LocalDateTime updatedAt, LocalDateTime deletedAt){
         this.id = id;
         this.CEP = CEP;
-        this.countryName = countryName;
-        this.cityName = cityName;
+        this.country = country;
+        this.state = state;
+        this.city = city;
         this.neighborhoodName = neighborhoodName;
         this.streetName = streetName;
         this.number = number;
@@ -35,61 +40,69 @@ public class Addresses{
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.deletedAt = deletedAt;
-    } 
+    }   
 
-    public Long getId(){
+    public Long getId() {
         return id;
     }
 
-    public void setId(Long id){
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public String getCEP(){
+    public String getCEP() {
         return CEP;
     }
 
-    public void setCEP(String CEP){
+    public void setCEP(String CEP) {
         this.CEP = CEP;
     }
 
-    public String getCountryName(){
-        return countryName;
+    public Countries getCountry() {
+        return country;
     }
 
-    public void setCountryName(String countryName){
-        this.countryName = countryName;
+    public void setCountry(Countries country) {
+        this.country = country;
     }
 
-    public String getCityName(){
-        return cityName;
+    public States getState() {
+        return state;
     }
 
-    public void setCityName(String cityName){
-        this.cityName = cityName;
+    public void setState(States state) {
+        this.state = state;
     }
 
-    public String getNeighborhoodName(){
+    public Cities getCity() {
+        return city;
+    }
+
+    public void setCity(Cities city) {
+        this.city = city;
+    }
+
+    public String getNeighborhoodName() {
         return neighborhoodName;
     }
 
-    public void setNeighborhoodName(String neighborhoodName){
+    public void setNeighborhoodName(String neighborhoodName) {
         this.neighborhoodName = neighborhoodName;
     }
 
-    public String getStreetName(){
+    public String getStreetName() {
         return streetName;
     }
 
-    public void setStreetName(String streetName){
+    public void setStreetName(String streetName) {
         this.streetName = streetName;
     }
 
-    public String getNumber(){
+    public String getNumber() {
         return number;
     }
 
-    public void setNumber(String number){
+    public void setNumber(String number) {
         this.number = number;
     }
 
@@ -97,33 +110,31 @@ public class Addresses{
         return type;
     }
 
-    public void setType(int type){
+    public void setType(int type) {
         this.type = type;
     }
 
-    public LocalDateTime getCreatedAt(){
+    public LocalDateTime getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(LocalDateTime createdAt){
+    public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
 
-    public LocalDateTime getUpdatedAt(){
+    public LocalDateTime getUpdatedAt() {
         return updatedAt;
     }
 
-    public void setUpdatedAt(LocalDateTime updatedAt){
+    public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
     }
 
-    public LocalDateTime getDeletedAt(){
+    public LocalDateTime getDeletedAt() {
         return deletedAt;
     }
 
-    public void setDeletedAt(LocalDateTime deletedAt){
+    public void setDeletedAt(LocalDateTime deletedAt) {
         this.deletedAt = deletedAt;
     }
-    
-    
 }
