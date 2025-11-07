@@ -36,7 +36,7 @@ public class CitiesDao{
                 cityList.add(getCities(resultSet));
             }
         }catch(SQLException e){
-            System.err.println("Erro ao listar endereços: " + e.getMessage());
+            System.err.println("Erro ao listar cidades: " + e.getMessage());
         }
 
         return cityList;
@@ -54,7 +54,7 @@ public class CitiesDao{
                 return getCities(resultSet);
             }
         }catch(SQLException e){
-            System.err.println("Erro ao buscar endereço por ID: " + e.getMessage());
+            System.err.println("Erro ao buscar cidade por ID: " + e.getMessage());
         }
 
         return null;

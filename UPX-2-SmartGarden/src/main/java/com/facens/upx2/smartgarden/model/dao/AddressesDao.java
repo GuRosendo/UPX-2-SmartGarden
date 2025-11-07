@@ -38,23 +38,28 @@ public class AddressesDao{
     private String add(Addresses address){
         String queryAdd = "INSERT INTO addresses(CEP, country, state, city, neighborhoodName, streetName, number, type) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
-        try(Connection connection = databaseConnection.getConnection()){
+        try (Connection connection = databaseConnection.getConnection()){
             connection.setAutoCommit(false);
 
-            try(PreparedStatement preparedStatement = connection.prepareStatement(queryAdd)){
+            try (PreparedStatement preparedStatement = connection.prepareStatement(queryAdd, PreparedStatement.RETURN_GENERATED_KEYS)){
                 insertAddressValues(preparedStatement, address);
 
                 int result = preparedStatement.executeUpdate();
 
-                if(result == 1){
+                if (result == 1) {
+                    ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
+                    if (generatedKeys.next()) {
+                        address.setId(generatedKeys.getLong(1));
+                    }
+
                     connection.commit();
-                    return "Endereço adicionado com sucesso";
+                    return "Endereço adicionado com sucesso (ID: " + address.getId() + ")";
                 }else{
                     connection.rollback();
                     return "Erro ao adicionar endereço";
                 }
             }
-
+            
         }catch(SQLException e){
             return "Erro SQL ao adicionar endereço: " + e.getMessage();
         }

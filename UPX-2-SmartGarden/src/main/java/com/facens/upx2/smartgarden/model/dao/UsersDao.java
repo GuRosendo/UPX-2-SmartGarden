@@ -17,6 +17,7 @@ import java.sql.ResultSet;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 /**
  *
@@ -55,15 +56,17 @@ public class UsersDao{
 
         String queryAddUser = "INSERT INTO users(userAddress, institution, fullName, userName, userEmail, userPassword) VALUES (?, ?, ?, ?, ?, ?)";
 
-        try(Connection connection = databaseConnection.getConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement(queryAddUser)){
-
+        try(Connection connection = databaseConnection.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(queryAddUser)){
+            BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+            
+            String passwordEncryptred = passwordEncoder.encode(user.getUserPassword());
+            
             preparedStatement.setLong(1, address.getId());
             preparedStatement.setLong(2, user.getInstitution().getId());
             preparedStatement.setString(3, user.getFullName());
             preparedStatement.setString(4, user.getUserName());
             preparedStatement.setString(5, user.getUserEmail());
-            preparedStatement.setString(6, user.getUserPassword());
+            preparedStatement.setString(6, passwordEncryptred);
 
             int result = preparedStatement.executeUpdate();
 
@@ -93,15 +96,17 @@ public class UsersDao{
 
         String queryUpdateUser = "UPDATE users SET userAddress = ?, institution = ?, fullName = ?, userName = ?, userEmail = ?, userPassword = ? WHERE id = ?";
 
-        try(Connection connection = databaseConnection.getConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement(queryUpdateUser)){
-
+        try(Connection connection = databaseConnection.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(queryUpdateUser)){
+            BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+            
+            String passwordEncryptred = passwordEncoder.encode(user.getUserPassword());
+            
             preparedStatement.setLong(1, address.getId());
             preparedStatement.setLong(2, user.getInstitution().getId());
             preparedStatement.setString(3, user.getFullName());
             preparedStatement.setString(4, user.getUserName());
             preparedStatement.setString(5, user.getUserEmail());
-            preparedStatement.setString(6, user.getUserPassword());
+            preparedStatement.setString(6, passwordEncryptred);
             preparedStatement.setLong(7, user.getId());
 
             int result = preparedStatement.executeUpdate();
@@ -117,17 +122,19 @@ public class UsersDao{
         }
     }
 
-    public List<Users> searchAllUsers(){
-        String querySearch = "SELECT * FROM users WHERE deleted_at IS NULL";
+    public List<Users> searchAllUsers() {
+        String querySearch = "SELECT * FROM users WHERE deletedAt IS NULL";
         List<Users> usersList = new ArrayList<>();
 
-        try(PreparedStatement preparedStatement = databaseConnection.getConnection().prepareStatement(querySearch)){
+        try(Connection connection = databaseConnection.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(querySearch)){
+
             ResultSet resultSet = preparedStatement.executeQuery();
 
-            while(resultSet.next()){
+            while (resultSet.next()) {
                 usersList.add(getUser(resultSet));
             }
-        }catch(SQLException e){
+
+        } catch (SQLException e) {
             System.err.println("Erro ao listar usuários: " + e.getMessage());
         }
 
@@ -135,9 +142,9 @@ public class UsersDao{
     }
 
     public Users searchUserById(Long id){
-        String querySearch = "SELECT * FROM users WHERE id = ? AND deleted_at IS NULL";
+        String querySearch = "SELECT * FROM users WHERE id = ? AND deletedAt IS NULL";
 
-        try(PreparedStatement preparedStatement = databaseConnection.getConnection().prepareStatement(querySearch)){
+        try(Connection connection = databaseConnection.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(querySearch)){
             preparedStatement.setLong(1, id);
 
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -153,9 +160,9 @@ public class UsersDao{
     }
 
     public Users searchUserByEmail(String email){
-        String querySearch = "SELECT * FROM users WHERE userEmail = ? AND deleted_at IS NULL";
+        String querySearch = "SELECT * FROM users WHERE userEmail = ? AND deletedAt IS NULL";
 
-        try(PreparedStatement preparedStatement = databaseConnection.getConnection().prepareStatement(querySearch)){
+        try(Connection connection = databaseConnection.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(querySearch)){
             preparedStatement.setString(1, email);
 
             ResultSet resultSet = preparedStatement.executeQuery();

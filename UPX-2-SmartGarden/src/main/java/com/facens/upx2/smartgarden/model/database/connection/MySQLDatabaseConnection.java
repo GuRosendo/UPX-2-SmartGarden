@@ -13,21 +13,16 @@ import java.sql.SQLException;
  *
  * @author Gustavo Rosendo Cardoso
  */
-public class MySQLDatabaseConnection implements DatabaseConnection{
+public class MySQLDatabaseConnection implements DatabaseConnection {
     private final Dotenv dotenv = Dotenv.load();
-    
+
     private final String URL = dotenv.get("DB_URL");
-    private final String User = dotenv.get("DB_USER");
-    private final String Password = dotenv.get("DB_PASSWORD");
-    
-    private Connection connect;
+    private final String USER = dotenv.get("DB_USER");
+    private final String PASSWORD = dotenv.get("DB_PASSWORD");
 
     @Override
     public Connection getConnection() throws SQLException {
-        if(connect == null){
-            connect = DriverManager.getConnection(URL, User, Password);
-        }
-        
-        return connect;
+        return DriverManager.getConnection(URL, USER, PASSWORD);
     }
 }
+

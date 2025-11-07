@@ -35,7 +35,7 @@ public class CountriesDao{
                 countryList.add(getCountries(resultSet));
             }
         }catch(SQLException e){
-            System.err.println("Erro ao listar endereços: " + e.getMessage());
+            System.err.println("Erro ao listar países: " + e.getMessage());
         }
 
         return countryList;
@@ -53,7 +53,7 @@ public class CountriesDao{
                 return getCountries(resultSet);
             }
         }catch(SQLException e){
-            System.err.println("Erro ao buscar endereço por ID: " + e.getMessage());
+            System.err.println("Erro ao buscar país por ID: " + e.getMessage());
         }
 
         return null;
