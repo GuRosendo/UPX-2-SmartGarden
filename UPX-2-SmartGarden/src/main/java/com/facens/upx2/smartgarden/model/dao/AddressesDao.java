@@ -38,17 +38,18 @@ public class AddressesDao{
     private String add(Addresses address){
         String queryAdd = "INSERT INTO addresses(CEP, country, state, city, neighborhoodName, streetName, number, type) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
-        try (Connection connection = databaseConnection.getConnection()){
+        try(Connection connection = databaseConnection.getConnection()){
             connection.setAutoCommit(false);
 
-            try (PreparedStatement preparedStatement = connection.prepareStatement(queryAdd, PreparedStatement.RETURN_GENERATED_KEYS)){
+            try(PreparedStatement preparedStatement = connection.prepareStatement(queryAdd, PreparedStatement.RETURN_GENERATED_KEYS)){
                 insertAddressValues(preparedStatement, address);
 
                 int result = preparedStatement.executeUpdate();
 
-                if (result == 1) {
+                if(result == 1){
                     ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
-                    if (generatedKeys.next()) {
+                    
+                    if(generatedKeys.next()){
                         address.setId(generatedKeys.getLong(1));
                     }
 
@@ -62,6 +63,8 @@ public class AddressesDao{
             
         }catch(SQLException e){
             return "Erro SQL ao adicionar endereço: " + e.getMessage();
+        }finally{
+            databaseConnection.closeConnection();
         }
     }
 
@@ -88,6 +91,8 @@ public class AddressesDao{
 
         }catch(SQLException e){
             return "Erro SQL ao atualizar endereço: " + e.getMessage();
+        }finally{
+            databaseConnection.closeConnection();
         }
     }
 
@@ -103,6 +108,8 @@ public class AddressesDao{
             }
         }catch(SQLException e){
             System.err.println("Erro ao listar endereços: " + e.getMessage());
+        }finally{
+            databaseConnection.closeConnection();
         }
 
         return addressList;
@@ -121,6 +128,8 @@ public class AddressesDao{
             }
         }catch(SQLException e){
             System.err.println("Erro ao buscar endereço por ID: " + e.getMessage());
+        }finally{
+            databaseConnection.closeConnection();
         }
 
         return null;

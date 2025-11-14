@@ -5,6 +5,7 @@
 package com.facens.upx2.smartgarden.model.domain;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 /**
  *
@@ -12,13 +13,15 @@ import java.time.LocalDateTime;
  */
 public class Lands{
     private Long id;
-    private Long landAddress;
+    private Addresses landAddress;
     private String landName;
     private LocalDateTime createdAt;
     private LocalDateTime deletedAt; 
     private LocalDateTime updatedAt;
+    
+    public Lands(){}
 
-    public Lands(Long id, Long landAddress, String landName, LocalDateTime createdAt, LocalDateTime deletedAt, LocalDateTime updatedAt){
+    public Lands(Long id, Addresses landAddress, String landName, LocalDateTime createdAt, LocalDateTime deletedAt, LocalDateTime updatedAt){
         this.id = id;
         this.landAddress = landAddress;
         this.landName = landName;
@@ -35,11 +38,11 @@ public class Lands{
         this.id = id;
     }
 
-    public Long getLandAddress(){
+    public Addresses getLandAddress(){
         return landAddress;
     }
 
-    public void setLandAddress(Long landAddress){
+    public void setLandAddress(Addresses landAddress){
         this.landAddress = landAddress;
     }
 
@@ -53,6 +56,16 @@ public class Lands{
 
     public LocalDateTime getCreatedAt(){
         return createdAt;
+    }
+    
+    public String getCreatedAtFormatted(){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        return this.createdAt.format(formatter);
+    }
+    
+    public String getCreatedAtHourFormatted(){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+        return this.createdAt.format(formatter);
     }
 
     public void setCreatedAt(LocalDateTime createdAt){

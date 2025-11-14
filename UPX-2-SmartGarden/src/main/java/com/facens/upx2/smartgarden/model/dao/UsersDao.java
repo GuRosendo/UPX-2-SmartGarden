@@ -78,6 +78,8 @@ public class UsersDao{
 
         }catch(SQLException e){
             return "Erro SQL ao adicionar usuário: " + e.getMessage();
+        }finally{
+            databaseConnection.closeConnection();
         }
     }
 
@@ -119,10 +121,12 @@ public class UsersDao{
 
         }catch(SQLException e){
             return "Erro SQL ao editar usuário: " + e.getMessage();
+        }finally{
+            databaseConnection.closeConnection();
         }
     }
 
-    public List<Users> searchAllUsers() {
+    public List<Users> searchAllUsers(){
         String querySearch = "SELECT * FROM users WHERE deletedAt IS NULL";
         List<Users> usersList = new ArrayList<>();
 
@@ -134,8 +138,10 @@ public class UsersDao{
                 usersList.add(getUser(resultSet));
             }
 
-        } catch (SQLException e) {
+        }catch(SQLException e){
             System.err.println("Erro ao listar usuários: " + e.getMessage());
+        }finally{
+            databaseConnection.closeConnection();
         }
 
         return usersList;
@@ -154,6 +160,8 @@ public class UsersDao{
             }
         }catch(SQLException e){
             System.err.println("Erro ao listar usuário por id: " + e.getMessage());
+        }finally{
+            databaseConnection.closeConnection();
         }
 
         return null;
@@ -172,6 +180,8 @@ public class UsersDao{
             }
         }catch(SQLException e){
             System.err.println("Erro ao listar usuário por email: " + e.getMessage());
+        }finally{
+            databaseConnection.closeConnection();
         }
 
         return null;

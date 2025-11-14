@@ -13,4 +13,6 @@ import java.sql.SQLException;
  */
 public interface DatabaseConnection{
     public Connection getConnection() throws SQLException;
+    
+    void closeConnection();
 }

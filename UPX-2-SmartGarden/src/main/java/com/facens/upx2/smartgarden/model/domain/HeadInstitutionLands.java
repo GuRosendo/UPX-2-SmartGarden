@@ -17,6 +17,9 @@ public class HeadInstitutionLands{
     private LocalDateTime createdAt;
     private LocalDateTime deletedAt; 
     private LocalDateTime updatedAt;
+    
+    public HeadInstitutionLands(){
+    }
 
     public HeadInstitutionLands(Long id, Institutions institution, Lands land, LocalDateTime createdAt, LocalDateTime deletedAt, LocalDateTime updatedAt){
         this.id = id;

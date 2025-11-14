@@ -15,14 +15,28 @@ import java.sql.SQLException;
  */
 public class MySQLDatabaseConnection implements DatabaseConnection {
     private final Dotenv dotenv = Dotenv.load();
-
     private final String URL = dotenv.get("DB_URL");
     private final String USER = dotenv.get("DB_USER");
     private final String PASSWORD = dotenv.get("DB_PASSWORD");
 
+    private Connection connection;
+
     @Override
-    public Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(URL, USER, PASSWORD);
+    public Connection getConnection() throws SQLException{
+        if(connection == null || connection.isClosed()){
+            connection = DriverManager.getConnection(URL, USER, PASSWORD);
+        }
+        return connection;
+    }
+
+    @Override
+    public void closeConnection(){
+        try{
+            if(connection != null && !connection.isClosed()){
+                connection.close();
+            }
+        }catch(SQLException e){
+            System.err.println("Erro ao fechar conexão: " + e.getMessage());
+        }
     }
 }
-

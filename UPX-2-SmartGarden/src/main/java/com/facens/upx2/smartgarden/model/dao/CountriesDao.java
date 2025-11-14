@@ -24,8 +24,8 @@ public class CountriesDao{
         this.databaseConnection = new MySQLDatabaseConnection();
     }
 
-    public List<Countries> searchCountry(){
-        String querySearch = "SELECT * FROM countries";
+    public List<Countries> searchAllCountries(){
+        String querySearch = "SELECT * FROM countries ORDER BY name_pt ASC";
         List<Countries> countryList = new ArrayList<>();
 
         try(PreparedStatement preparedStatement = databaseConnection.getConnection().prepareStatement(querySearch)){
@@ -36,6 +36,8 @@ public class CountriesDao{
             }
         }catch(SQLException e){
             System.err.println("Erro ao listar países: " + e.getMessage());
+        }finally{
+            databaseConnection.closeConnection();
         }
 
         return countryList;
@@ -54,6 +56,8 @@ public class CountriesDao{
             }
         }catch(SQLException e){
             System.err.println("Erro ao buscar país por ID: " + e.getMessage());
+        }finally{
+            databaseConnection.closeConnection();
         }
 
         return null;

@@ -6,17 +6,16 @@ package com.facens.upx2.smartgarden.controller;
 
 import com.facens.upx2.smartgarden.model.dao.AuthenticationDao;
 import com.facens.upx2.smartgarden.model.domain.Users;
+import com.facens.upx2.smartgarden.controller.helper.DialogHelper;
 import com.facens.upx2.smartgarden.view.form.LoginScreen;
+import com.facens.upx2.smartgarden.view.form.MainMenuScreen;
 import com.facens.upx2.smartgarden.view.model.LoginDto;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import javax.swing.JOptionPane;
 
 /**
  *
  * @author Gustavo Rosendo Cardoso
  */
-public class LoginController implements ActionListener{
+public class LoginController{
     private final LoginScreen loginScreen;
     private final AuthenticationDao authenticationDao;
 
@@ -25,32 +24,22 @@ public class LoginController implements ActionListener{
         this.authenticationDao = new AuthenticationDao();
     }
     
-    @Override
-    public void actionPerformed(ActionEvent ae){
-        String action = ae.getActionCommand().toLowerCase();
-                
-        switch(action){
-            case "login": login(); break;
-            case "cancel": cancel(); break;
-        }
-    }
-    
-    private void login(){
+    public void login(){
         String user = this.loginScreen.getTxtLogin().getText();
         String password = this.loginScreen.getTxtPassword().getText();
         
-        if(user.equals("")){
-            this.loginScreen.getLabelLoginMessage().setText("O campo usuário deve ser preenchido");
+        if(user.isEmpty()){
+            DialogHelper.showMessage("O campo usuário deve ser preenchido", loginScreen);
             return;
         }
         
-        if(password.equals("")){
-            this.loginScreen.getLabelLoginMessage().setText("O campo senha deve ser preenchido");
+        if(password.isEmpty()){
+            DialogHelper.showMessage("O campo senha deve ser preenchido", loginScreen);
             return;
         }
         
         if(password.length() < 8){
-            this.loginScreen.getLabelLoginMessage().setText("Usuário ou senha incorreto(s)");
+            DialogHelper.showMessage("Usuário ou senha incorreto(s)", loginScreen);
             return;
         }
         
@@ -58,19 +47,23 @@ public class LoginController implements ActionListener{
         
         Users users = this.authenticationDao.login(loginDto);
         
-        if(users != null){
-            JOptionPane.showConfirmDialog(null, "Usuário logado com sucesso: " + users.getUserName());
+        if(users != null){ 
+            MainMenuScreen mainMenuScreen = new MainMenuScreen(users);
+            
+            mainMenuScreen.setVisible(true);
+            
+            this.loginScreen.dispose();
             
             cleanInputs();
         }else{
-            this.loginScreen.getLabelLoginMessage().setText("Usuário ou senha incorreto(s)");
+            DialogHelper.showMessage("Usuário ou senha incorreto(s)", loginScreen);
         }
     }
     
-    private void cancel(){
-        int confirmation = JOptionPane.showConfirmDialog(loginScreen, "Deseja realmente sair?", "Sair", JOptionPane.YES_NO_OPTION);
+    public void cancel(){
+        boolean confirmation = DialogHelper.showConfirm("Deseja realmente sair?", "Sair", loginScreen);
         
-        if(confirmation == JOptionPane.YES_OPTION){
+        if(confirmation){
             System.exit(0);
         }
     }
@@ -78,6 +71,5 @@ public class LoginController implements ActionListener{
     public void cleanInputs(){
         this.loginScreen.getTxtLogin().setText("");
         this.loginScreen.getTxtPassword().setText("");
-        this.loginScreen.getLabelLoginMessage().setText("");
     }
 }

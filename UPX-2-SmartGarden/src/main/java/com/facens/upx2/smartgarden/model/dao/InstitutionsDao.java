@@ -62,6 +62,8 @@ public class InstitutionsDao{
 
         }catch(SQLException e){
             return "Erro SQL ao adicionar instituição: " + e.getMessage();
+        }finally{
+            databaseConnection.closeConnection();
         }
     }
 
@@ -97,6 +99,8 @@ public class InstitutionsDao{
 
         }catch(SQLException e){
             return "Erro SQL ao atualizar instituição: " + e.getMessage();
+        }finally{
+            databaseConnection.closeConnection();
         }
     }
 
@@ -112,6 +116,8 @@ public class InstitutionsDao{
             }
         }catch(SQLException e){
             System.err.println("Erro ao listar instituições: " + e.getMessage());
+        }finally{
+            databaseConnection.closeConnection();
         }
 
         return institutionList;
@@ -130,6 +136,8 @@ public class InstitutionsDao{
             }
         }catch(SQLException e){
             System.err.println("Erro ao buscar instituição por ID: " + e.getMessage());
+        }finally{
+            databaseConnection.closeConnection();
         }
 
         return null;

@@ -37,6 +37,29 @@ public class CitiesDao{
             }
         }catch(SQLException e){
             System.err.println("Erro ao listar cidades: " + e.getMessage());
+        }finally{
+            databaseConnection.closeConnection();
+        }
+
+        return cityList;
+    }
+    
+    public List<Cities> searchCitiesByStateId(Long stateId){
+        String querySearch = "SELECT * FROM cities WHERE uf = ? ORDER BY name ASC";
+        List<Cities> cityList = new ArrayList<>();
+
+        try(PreparedStatement preparedStatement = databaseConnection.getConnection().prepareStatement(querySearch)){
+            preparedStatement.setLong(1, stateId);
+            
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while(resultSet.next()){
+                cityList.add(getCitiesWithoutClass(resultSet));
+            }
+        }catch(SQLException e){
+            System.err.println("Erro ao listar cidades: " + e.getMessage());
+        }finally{
+            databaseConnection.closeConnection();
         }
 
         return cityList;
@@ -55,6 +78,8 @@ public class CitiesDao{
             }
         }catch(SQLException e){
             System.err.println("Erro ao buscar cidade por ID: " + e.getMessage());
+        }finally{
+            databaseConnection.closeConnection();
         }
 
         return null;
@@ -66,6 +91,20 @@ public class CitiesDao{
         long stateId = resultSet.getLong("uf");
         
         States state = new StatesDao().searchStateById(stateId);
+        
+        cities.setId(resultSet.getLong("id"));
+        cities.setName(resultSet.getString("name"));
+        cities.setUf(state);
+        cities.setIbge(resultSet.getInt("ibge"));
+
+        return cities;
+    }
+    
+    private Cities getCitiesWithoutClass(ResultSet resultSet) throws SQLException{
+        Cities cities = new Cities();
+        States state = new States();
+        
+        state.setId(resultSet.getLong("uf"));
         
         cities.setId(resultSet.getLong("id"));
         cities.setName(resultSet.getString("name"));
