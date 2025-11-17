@@ -132,7 +132,7 @@ public class Plantings{
     }
     
     public Double getFinalProfit() {
-        return finalProfit;
+        return this.plantingProfit - this.plantingCosts;
     }
 
     public void setFinalProfit(Double finalProfit) {

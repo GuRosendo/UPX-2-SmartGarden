@@ -17,10 +17,10 @@ import javax.swing.JTextField;
  *
  * @author Gustavo Rosendo Cardoso
  */
-public class PlantingVolunteerScreen extends javax.swing.JFrame implements AddressScreen {
+public class PlantingVolunteerScreen extends javax.swing.JFrame {
         
-    private VolunteerPlantingsController registerVolunteerController;
-    private VolunteerPlantingsControllerHelper registerVolunteerControllerHelper;
+    private VolunteerPlantingsController volunteerPlantingsController;
+    private VolunteerPlantingsControllerHelper volunteerPlantingsControllerHelper;
     private Long institutionId;
         
     /**
@@ -34,8 +34,8 @@ public class PlantingVolunteerScreen extends javax.swing.JFrame implements Addre
         setLocationRelativeTo(null);
         setResizable(false);
         
-        this.registerVolunteerControllerHelper = new VolunteerPlantingsControllerHelper(this);
-        this.registerVolunteerController = new VolunteerPlantingsController(registerVolunteerControllerHelper, this);
+        this.volunteerPlantingsControllerHelper = new VolunteerPlantingsControllerHelper(this);
+        this.volunteerPlantingsController = new VolunteerPlantingsController(volunteerPlantingsControllerHelper, this);
         
         this.institutionId = institutionId;
         
@@ -59,30 +59,14 @@ public class PlantingVolunteerScreen extends javax.swing.JFrame implements Addre
         jLabel9 = new javax.swing.JLabel();
         jSearchButton = new javax.swing.JButton();
         jDeleteButton = new javax.swing.JButton();
-        jCEPTextField = new javax.swing.JTextField();
-        jLabel5 = new javax.swing.JLabel();
-        jCountryComboBox = new javax.swing.JComboBox<ComboItem>() ;
-        jLabel3 = new javax.swing.JLabel();
-        jStateComboBox = new javax.swing.JComboBox<ComboItem>() ;
-        jLabel4 = new javax.swing.JLabel();
-        jCityComboBox = new javax.swing.JComboBox<ComboItem>() ;
-        jLabel7 = new javax.swing.JLabel();
-        jNeighborhoodNameTextField = new javax.swing.JTextField();
-        jLabel6 = new javax.swing.JLabel();
-        jStreetTextField = new javax.swing.JTextField();
-        jLabel8 = new javax.swing.JLabel();
-        jNumberTextField = new javax.swing.JTextField();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel10 = new javax.swing.JLabel();
-        jFullNameTextField = new javax.swing.JTextField();
+        jComboBoxVolunteers = new javax.swing.JComboBox<ComboItem>() ;
         jLabel11 = new javax.swing.JLabel();
-        jEmailTextField = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(1600, 754));
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jButtonRegister.setText("Cadastrar Voluntário");
+        jButtonRegister.setText("Adicionar Voluntário");
         jButtonRegister.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButtonRegisterActionPerformed(evt);
@@ -129,79 +113,26 @@ public class PlantingVolunteerScreen extends javax.swing.JFrame implements Addre
             }
         });
         getContentPane().add(jDeleteButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(700, 180, -1, -1));
-        getContentPane().add(jCEPTextField, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 90, 170, -1));
 
-        jLabel5.setText("CEP");
-        getContentPane().add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 70, -1, -1));
+        jComboBoxVolunteers.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Selecione um voluntário" }));
+        getContentPane().add(jComboBoxVolunteers, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 100, -1, -1));
 
-        jCountryComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Selecione um País" }));
-        jCountryComboBox.setAutoscrolls(true);
-        jCountryComboBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jCountryComboBoxActionPerformed(evt);
-            }
-        });
-        getContentPane().add(jCountryComboBox, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 90, 120, -1));
-
-        jLabel3.setText("País");
-        getContentPane().add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 70, -1, -1));
-
-        jStateComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Selecione um estado" }));
-        jStateComboBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jStateComboBoxActionPerformed(evt);
-            }
-        });
-        getContentPane().add(jStateComboBox, new org.netbeans.lib.awtextra.AbsoluteConstraints(560, 90, 190, -1));
-
-        jLabel4.setText("Estado");
-        getContentPane().add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(560, 70, -1, -1));
-
-        jCityComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Selecione uma cidade" }));
-        getContentPane().add(jCityComboBox, new org.netbeans.lib.awtextra.AbsoluteConstraints(780, 90, 190, -1));
-
-        jLabel7.setText("Cidade");
-        getContentPane().add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(780, 70, -1, -1));
-        getContentPane().add(jNeighborhoodNameTextField, new org.netbeans.lib.awtextra.AbsoluteConstraints(1000, 90, 170, -1));
-
-        jLabel6.setText("Bairro");
-        getContentPane().add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(1000, 70, -1, -1));
-        getContentPane().add(jStreetTextField, new org.netbeans.lib.awtextra.AbsoluteConstraints(1200, 90, 170, -1));
-
-        jLabel8.setText("Rua");
-        getContentPane().add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(1200, 70, -1, -1));
-        getContentPane().add(jNumberTextField, new org.netbeans.lib.awtextra.AbsoluteConstraints(1400, 90, 170, -1));
-
-        jLabel1.setText("Numero");
-        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(1400, 70, -1, -1));
-
-        jLabel10.setText("Nome Completo");
-        getContentPane().add(jLabel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 70, -1, -1));
-        getContentPane().add(jFullNameTextField, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 90, 170, -1));
-
-        jLabel11.setText("Email");
-        getContentPane().add(jLabel11, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 130, -1, -1));
-        getContentPane().add(jEmailTextField, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 150, 170, -1));
+        jLabel11.setText("Voluntário");
+        getContentPane().add(jLabel11, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 80, -1, -1));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButtonRegisterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonRegisterActionPerformed
-        String name = this.getjFullNameTextField().getText();
-        String email = this.getjEmailTextField().getText();
-        String userCep = this.getjCEPTextField().getText();
-        String neighborhoodName = this.getjNeighborhoodNameTextField().getText();
-        String streetName = this.getjStreetTextField().getText();
-        String number = this.getjNumberTextField().getText().trim();
-        Long cityId = 0L;
-        
-        Object selectedItem = jCityComboBox.getSelectedItem();
-        
+        Long volunteerId = 0L;
+
+        Object selectedItem = jComboBoxVolunteers.getSelectedItem();
+
         if(selectedItem instanceof ComboItem comboItem){
-            cityId = comboItem.getId();
+            volunteerId = comboItem.getId();
         }
         
-        this.registerVolunteerController.registerVolunteer(name, email, userCep, neighborhoodName, streetName, number, cityId, this.institutionId);
+        this.volunteerPlantingsController.registerVolunteer(volunteerId, this.institutionId);
     }//GEN-LAST:event_jButtonRegisterActionPerformed
 
     private void jButtonBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonBackActionPerformed
@@ -215,62 +146,28 @@ public class PlantingVolunteerScreen extends javax.swing.JFrame implements Addre
     }//GEN-LAST:event_jSearchButtonActionPerformed
 
     private void jDeleteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jDeleteButtonActionPerformed
-        registerVolunteerController.deleteSelectedCropType(this.institutionId);
+        volunteerPlantingsController.deleteSelectedVolunteer(this.institutionId);
     }//GEN-LAST:event_jDeleteButtonActionPerformed
-
-    private void jCountryComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCountryComboBoxActionPerformed
-        Object selectedItem = jCountryComboBox.getSelectedItem();
-
-        if(selectedItem instanceof ComboItem comboItem){
-            long countryId = comboItem.getId();
-            this.registerVolunteerController.loadStatesByCountryId(countryId);
-        }
-    }//GEN-LAST:event_jCountryComboBoxActionPerformed
-
-    private void jStateComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jStateComboBoxActionPerformed
-        Object selectedItem = jStateComboBox.getSelectedItem();
-
-        if(selectedItem instanceof ComboItem comboItem){
-            long stateId = comboItem.getId();
-            this.registerVolunteerController.loadCitiesByStateId(stateId);
-        }
-    }//GEN-LAST:event_jStateComboBoxActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonBack;
     private javax.swing.JButton jButtonRegister;
-    private javax.swing.JTextField jCEPTextField;
-    private javax.swing.JComboBox jCityComboBox;
-    private javax.swing.JComboBox jCountryComboBox;
+    private javax.swing.JComboBox jComboBoxVolunteers;
     private javax.swing.JButton jDeleteButton;
-    private javax.swing.JTextField jEmailTextField;
-    private javax.swing.JTextField jFullNameTextField;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel7;
-    private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
-    private javax.swing.JTextField jNeighborhoodNameTextField;
-    private javax.swing.JTextField jNumberTextField;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JButton jSearchButton;
     private javax.swing.JTextField jSearchTextField;
-    private javax.swing.JComboBox jStateComboBox;
-    private javax.swing.JTextField jStreetTextField;
     private javax.swing.JTable jTable1;
     // End of variables declaration//GEN-END:variables
 
     private void loadData(long institutionId){
-        this.registerVolunteerController.loadVolunteers(institutionId);
+        this.volunteerPlantingsController.loadVolunteers(institutionId);
     }
     
     private void loadDataWithSearch(long institutionId, String search){
-        this.registerVolunteerController.loadVolunteersWithSearch(institutionId, search);
+        this.volunteerPlantingsController.loadVolunteersWithSearch(institutionId, search);
     }
 
     public JButton getjButtonBack() {
@@ -289,28 +186,12 @@ public class PlantingVolunteerScreen extends javax.swing.JFrame implements Addre
         this.jButtonRegister = jButtonRegister;
     }
 
-    public JTextField getjCEPTextField() {
-        return jCEPTextField;
+    public JComboBox<ComboItem> getjComboBoxVolunteers() {
+        return jComboBoxVolunteers;
     }
 
-    public void setjCEPTextField(JTextField jCEPTextField) {
-        this.jCEPTextField = jCEPTextField;
-    }
-
-    public JComboBox getjCityComboBox() {
-        return jCityComboBox;
-    }
-
-    public void setjCityComboBox(JComboBox jCityComboBox) {
-        this.jCityComboBox = jCityComboBox;
-    }
-
-    public JComboBox getjCountryComboBox() {
-        return jCountryComboBox;
-    }
-
-    public void setjCountryComboBox(JComboBox jCountryComboBox) {
-        this.jCountryComboBox = jCountryComboBox;
+    public void setjComboBoxVolunteers(JComboBox<ComboItem> jComboBoxVolunteers) {
+        this.jComboBoxVolunteers = jComboBoxVolunteers;
     }
 
     public JButton getjDeleteButton() {
@@ -321,36 +202,12 @@ public class PlantingVolunteerScreen extends javax.swing.JFrame implements Addre
         this.jDeleteButton = jDeleteButton;
     }
 
-    public JTextField getjEmailTextField() {
-        return jEmailTextField;
+    public JTable getjTable1() {
+        return jTable1;
     }
 
-    public void setjEmailTextField(JTextField jEmailTextField) {
-        this.jEmailTextField = jEmailTextField;
-    }
-
-    public JTextField getjFullNameTextField() {
-        return jFullNameTextField;
-    }
-
-    public void setjFullNameTextField(JTextField jFullNameTextField) {
-        this.jFullNameTextField = jFullNameTextField;
-    }
-
-    public JTextField getjNeighborhoodNameTextField() {
-        return jNeighborhoodNameTextField;
-    }
-
-    public void setjNeighborhoodNameTextField(JTextField jNeighborhoodNameTextField) {
-        this.jNeighborhoodNameTextField = jNeighborhoodNameTextField;
-    }
-
-    public JTextField getjNumberTextField() {
-        return jNumberTextField;
-    }
-
-    public void setjNumberTextField(JTextField jNumberTextField) {
-        this.jNumberTextField = jNumberTextField;
+    public void setjTable1(JTable jTable1) {
+        this.jTable1 = jTable1;
     }
 
     public JButton getjSearchButton() {
@@ -368,32 +225,6 @@ public class PlantingVolunteerScreen extends javax.swing.JFrame implements Addre
     public void setjSearchTextField(JTextField jSearchTextField) {
         this.jSearchTextField = jSearchTextField;
     }
-
-    public JComboBox getjStateComboBox() {
-        return jStateComboBox;
-    }
-
-    public void setjStateComboBox(JComboBox jStateComboBox) {
-        this.jStateComboBox = jStateComboBox;
-    }
-
-    public JTextField getjStreetTextField() {
-        return jStreetTextField;
-    }
-
-    public void setjStreetTextField(JTextField jStreetTextField) {
-        this.jStreetTextField = jStreetTextField;
-    }
-
-    public JTable getjTable1() {
-        return jTable1;
-    }
-
-    public void setjTable1(JTable jTable1) {
-        this.jTable1 = jTable1;
-    }
-    
-    
     
     public void clearInputs(){
     }

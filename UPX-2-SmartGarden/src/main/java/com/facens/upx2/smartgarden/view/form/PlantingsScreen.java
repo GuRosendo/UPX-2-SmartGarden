@@ -152,7 +152,11 @@ public class PlantingsScreen extends javax.swing.JFrame {
     
         switch(action){
             case "Adicionar Voluntario":
-                System.out.println(action);
+                long headInstitutionLandsId = this.institutionId;
+        
+                PlantingVolunteerScreen plantingVolunteerScreen = new PlantingVolunteerScreen(headInstitutionLandsId);
+                plantingVolunteerScreen.setVisible(true);
+                
                 break;
 
             case "Adicionar Custos":

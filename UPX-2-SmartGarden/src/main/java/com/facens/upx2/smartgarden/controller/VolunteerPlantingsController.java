@@ -55,99 +55,11 @@ public class VolunteerPlantingsController{
        // this.volunteerControllerHelper.populateTable(volunteerPlantings);
     }
     
-    public void loadCountries(){
-        CountriesDao countriesDao = new CountriesDao();
+    public void registerVolunteer(Long volunteerId, Long institutionId){      
         
-        List<Countries> countries = countriesDao.searchAllCountries();
-        
-        this.comboBoxHelper.populateCountriesComboBox(countries);
     }
     
-    public void loadStatesByCountryId(Long countryId){
-        StatesDao statesDao = new StatesDao();
-        
-        List<States> states = statesDao.searchStatesByCountryId(countryId);
-        
-        this.comboBoxHelper.populateStatesComboBox(states);
-    }
-    
-    public void loadCitiesByStateId(Long stateId){
-        CitiesDao citiesDao = new CitiesDao();
-                
-        List<Cities> cities = citiesDao.searchCitiesByStateId(stateId);
-        
-        this.comboBoxHelper.populateCitiesComboBox(cities);
-    }
-    
-    public void registerVolunteer(String name, String email, String userCep, String neighborhoodName, String streetName, String number, Long cityId, Long institutionId){
-        if(name.isEmpty()){
-            DialogHelper.showMessage("O campo nome deve ser preenchido", this.volunteerScreen);
-            return;
-        }
-        
-        if(email.isEmpty()){
-            DialogHelper.showMessage("O campo email deve ser preenchido", this.volunteerScreen);
-            return;
-        }
-        
-        if(userCep.isEmpty() || userCep.length() != 8 || !userCep.matches("\\d{8}")){
-            DialogHelper.showMessage("O CEP deve conter exatamente 8 números (sem pontos, hífens ou letras)", this.volunteerScreen);
-            return;
-        }
-        
-        if(neighborhoodName.isEmpty()){
-            DialogHelper.showMessage("O campo bairro deve ser preenchido", this.volunteerScreen);
-            return;
-        }
-        
-        if(streetName.isEmpty()){
-            DialogHelper.showMessage("O campo rua deve ser preenchido", this.volunteerScreen);
-            return;
-        }
-        
-        if(number.isEmpty() || (!number.matches("\\d+") && !number.equalsIgnoreCase("SN"))){
-            DialogHelper.showMessage("O campo número deve conter apenas números ou 'SN' (sem número)", this.volunteerScreen);
-            return;
-        }
-        
-        if(cityId == 0){
-            DialogHelper.showMessage("Cidade incorreta", this.volunteerScreen);
-            return;
-        }
-        
-        UsersDao usersDao = new UsersDao();
-        
-        Users existEmail = usersDao.searchUserByEmail(email);
-            
-        if(existEmail != null){
-            DialogHelper.showMessage("Email já cadastrado!", this.volunteerScreen);
-            return;
-        }
-        
-        CitiesDao citiesDao = new CitiesDao();
-        Cities city = citiesDao.searchCityById(cityId);
-        
-        Addresses newAddress = new Addresses();
-        newAddress.setStreetName(streetName);
-        newAddress.setNumber(number);
-        newAddress.setNeighborhoodName(neighborhoodName);
-        newAddress.setCEP(userCep);
-        newAddress.setCity(city);
-        newAddress.setState(city.getUf());
-        newAddress.setCountry(city.getUf().getCountry());
-        newAddress.setType(1);
-        
-        InstitutionsDao institutionsDao = new InstitutionsDao();
-        Institutions institution = institutionsDao.searchInstitutionById(institutionId);
-        
-        Users newUser = new Users();
-        newUser.setFullName(name);
-        newUser.setUserEmail(email);
-        newUser.setInstitution(institution);
-        newUser.setUserAddress(newAddress);
-    }
-    
-    public void deleteSelectedCropType(Long institutionId){
+    public void deleteSelectedVolunteer(Long institutionId){
         int row = this.volunteerScreen.getjTable1().getSelectedRow();
 
         if(row < 0){
@@ -156,11 +68,11 @@ public class VolunteerPlantingsController{
             return;
         }
 
-        Long cropTypeId = (Long) this.volunteerScreen.getjTable1().getValueAt(row, 0);
-        String cropTypeName = (String) this.volunteerScreen.getjTable1().getValueAt(row, 1);
+        Long volunteerId = (Long) this.volunteerScreen.getjTable1().getValueAt(row, 0);
+        String volunteerName = (String) this.volunteerScreen.getjTable1().getValueAt(row, 1);
 
         boolean confirm = DialogHelper.showConfirm(
-            "Deseja realmente excluir o usuário: " + cropTypeName + "?",
+            "Deseja realmente excluir o voluntário: " + volunteerName + "?",
             "Confirmar exclusão",
             this.volunteerScreen
         );
@@ -169,7 +81,7 @@ public class VolunteerPlantingsController{
             return;
         }
 
-        String result = new CropTypesDao().deleteCropTypeById(cropTypeId);
+        String result = new VolunteersPlantingsDao().deleteVolunteerById(volunteerId);
 
         DialogHelper.showMessage(result, this.volunteerScreen);
 
