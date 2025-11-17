@@ -449,10 +449,10 @@ public class UsersScreen extends javax.swing.JFrame implements AddressScreen {
         jCountryComboBox.setSelectedIndex(0);
         
         jStateComboBox.removeAllItems();
-        jStateComboBox.addItem(new ComboItem(0L, "Estado"));
+        jStateComboBox.addItem(new ComboItem(0L, ""));
 
         jCityComboBox.removeAllItems();
-        jCityComboBox.addItem(new ComboItem(0L, "Cidade"));
+        jCityComboBox.addItem(new ComboItem(0L, ""));
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

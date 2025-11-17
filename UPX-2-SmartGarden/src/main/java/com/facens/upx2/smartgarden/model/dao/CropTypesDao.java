@@ -107,7 +107,7 @@ public class CropTypesDao{
     }
     
     public List<CropTypes> getCropTypes(Long institutionId){
-        String querySearch = "SELECT * FROM cropTypes WHERE institution = ? AND deletedAt IS NULL ORDER BY createdAt DESC;";
+        String querySearch = "SELECT * FROM cropTypes WHERE institution = ? AND deletedAt IS NULL ORDER BY name ASC;";
         List<CropTypes> cropTypesList = new ArrayList<>();
 
         try(Connection connection = databaseConnection.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(querySearch)){
@@ -129,7 +129,7 @@ public class CropTypesDao{
     }
     
     public List<CropTypes> getCropTypesWithSearch(Long institutionId, String search){
-        String querySearch = "SELECT * FROM cropTypes WHERE name LIKE ? AND institution = ? AND deletedAt IS NULL ORDER BY createdAt DESC;";
+        String querySearch = "SELECT * FROM cropTypes WHERE name LIKE ? AND institution = ? AND deletedAt IS NULL ORDER BY name ASC;";
         List<CropTypes> cropTypesList = new ArrayList<>();
 
         try(Connection connection = databaseConnection.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(querySearch)){
@@ -149,6 +149,30 @@ public class CropTypesDao{
         }
 
         return cropTypesList;
+    }
+    
+    public CropTypes getCropTypesById(Long cropTypeId){
+        String querySearch = "SELECT * FROM cropTypes WHERE id = ? AND deletedAt IS NULL;";
+        CropTypes cropType = null;
+
+        try(Connection connection = databaseConnection.getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(querySearch)){
+
+            preparedStatement.setLong(1, cropTypeId);
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if(resultSet.next()){
+                cropType = getCropTypes(resultSet); 
+            }
+
+        }catch(SQLException e){
+            System.err.println("Erro ao listar tipo de plantio por ID: " + e.getMessage());
+        }finally{
+            databaseConnection.closeConnection();
+        }
+
+        return cropType; 
     }
     
     public String deleteCropTypeById(Long cropTypeId){

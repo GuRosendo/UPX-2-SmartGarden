@@ -27,7 +27,15 @@ public class PlantingsControllerHelper {
         
         for(Plantings planting : plantings){
             tableModel.addRow(new Object[]{
-                
+                planting.getId(),
+                planting.getHeadInstitutionLand().getLand().getLandName(),
+                planting.getTotalVolunteers(),
+                planting.getPlantingCosts(),
+                planting.getPlantingProfit(),
+                planting.getPlantingWeight(),
+                planting.getApproximateHarvestDateFormatted(),
+                planting.getFinalProfit(),
+                planting.getCreatedAtFormatted() + " " + planting.getCreatedAtHourFormatted()
             });
         };
         

@@ -6,12 +6,16 @@ package com.facens.upx2.smartgarden.model.dao;
 
 import com.facens.upx2.smartgarden.model.database.connection.DatabaseConnection;
 import com.facens.upx2.smartgarden.model.database.connection.MySQLDatabaseConnection;
+import com.facens.upx2.smartgarden.model.domain.CropTypes;
+import com.facens.upx2.smartgarden.model.domain.HeadInstitutionLands;
+import com.facens.upx2.smartgarden.model.domain.Lands;
 import com.facens.upx2.smartgarden.model.domain.Plantings;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -102,7 +106,7 @@ public class PlantingsDao{
     }
     
     public List<Plantings> getPlantings(Long institutionId){
-        String querySearch = "SELECT * FROM cropTypes WHERE institution = ? AND deletedAt IS NULL ORDER BY createdAt DESC;";
+        String querySearch = "SELECT pl.id AS id, la.landName AS landName, COUNT(vlp.id) AS totalVolunteers, SUM(plc.cost) AS plantingCosts, SUM(pp.profit) AS plantingProfit, SUM(pp.weight) AS plantingWeight, pl.approximatedHarvestDate AS approximatedHarvestDate, pl.createdAt AS createdAt FROM plantings pl INNER JOIN headInstitutionLands hdi ON pl.headInstitutionLand = hdi.id LEFT JOIN lands la ON hdi.land = la.id LEFT JOIN institutions inst ON hdi.institution = inst.id LEFT JOIN volunteerPlantings vlp ON hdi.institution = vlp.headInstitutionLand LEFT JOIN users usr ON vlp.volunteer = usr.id LEFT JOIN plantingCosts plc ON hdi.institution = plc.headInstitutionLand LEFT JOIN plantingsProductions pp ON hdi.institution = pp.headInstitutionLand WHERE hdi.institution = ? AND pl.deletedAt IS NULL AND hdi.deletedAt IS NULL AND la.deletedAt IS NULL AND inst.deletedAt IS NULL AND vlp.deletedAt IS NULL AND usr.deletedAt IS NULL AND plc.deletedAt IS NULL AND pp.deletedAt IS NULL GROUP BY pl.id;";
         List<Plantings> plantingsList = new ArrayList<>();
 
         try(Connection connection = databaseConnection.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(querySearch)){
@@ -123,13 +127,13 @@ public class PlantingsDao{
         return plantingsList;
     }
     
-    public List<Plantings> getCropTypesWithSearch(Long institutionId, String search){
-        String querySearch = "SELECT * FROM cropTypes WHERE name LIKE ? AND institution = ? AND deletedAt IS NULL ORDER BY createdAt DESC;";
+    public List<Plantings> getPlantingsWithSearch(Long institutionId, String search){
+        String querySearch = "SELECT pl.id AS id, la.landName AS landName, COUNT(vlp.id) AS totalVolunteers, SUM(plc.cost) AS plantingCosts, SUM(pp.profit) AS plantingProfit, SUM(pp.weight) AS plantingWeight, pl.approximatedHarvestDate AS approximatedHarvestDate, pl.createdAt AS createdAt FROM plantings pl INNER JOIN headInstitutionLands hdi ON pl.headInstitutionLand = hdi.id LEFT JOIN lands la ON hdi.land = la.id LEFT JOIN institutions inst ON hdi.institution = inst.id LEFT JOIN volunteerPlantings vlp ON hdi.institution = vlp.headInstitutionLand LEFT JOIN users usr ON vlp.volunteer = usr.id LEFT JOIN plantingCosts plc ON hdi.institution = plc.headInstitutionLand LEFT JOIN plantingsProductions pp ON hdi.institution = pp.headInstitutionLand WHERE hdi.institution = ? AND la.landName LIKE ? AND pl.deletedAt IS NULL AND hdi.deletedAt IS NULL AND la.deletedAt IS NULL AND inst.deletedAt IS NULL AND vlp.deletedAt IS NULL AND usr.deletedAt IS NULL AND plc.deletedAt IS NULL AND pp.deletedAt IS NULL GROUP BY pl.id;";
         List<Plantings> plantingsList = new ArrayList<>();
 
         try(Connection connection = databaseConnection.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(querySearch)){
-            preparedStatement.setString(1, search + "%");
-            preparedStatement.setLong(2, institutionId);
+            preparedStatement.setLong(1, institutionId);
+            preparedStatement.setString(2, search + "%");
             
             ResultSet resultSet = preparedStatement.executeQuery();
 
@@ -169,15 +173,64 @@ public class PlantingsDao{
         }
     }
     
-    private Plantings getPlantings(ResultSet resultSet) throws SQLException{
+    private Plantings getPlantings(ResultSet resultSet) throws SQLException {
         Plantings plantings = new Plantings();
-        
-        return null;
+
+        plantings.setId(resultSet.getLong("id"));
+
+        long headInstitutionLandId = resultSet.getLong("headInstitutionLand");
+        long cropTypeId = resultSet.getLong("cropType");
+
+        HeadInstitutionLands headInstitutionLand = new HeadInstitutionLandsDao().searchHeadInstitutionLandById(headInstitutionLandId);
+
+        CropTypes cropType = new CropTypesDao().getCropTypesById(cropTypeId);
+
+        plantings.setHeadInstitutionLand(headInstitutionLand);
+        plantings.setCropType(cropType);
+
+        plantings.setApproximateHarvestDate(
+                resultSet.getObject("approximatedHarvestDate", LocalDateTime.class)
+        );
+
+        plantings.setCreatedAt(
+                resultSet.getObject("createdAt", LocalDateTime.class)
+        );
+        plantings.setUpdatedAt(
+                resultSet.getObject("updatedAt", LocalDateTime.class)
+        );
+        plantings.setDeletedAt(
+                resultSet.getObject("deletedAt", LocalDateTime.class)
+        );
+
+        return plantings;
     }
-    
-    private Plantings getPlantingsWithoutClass(ResultSet resultSet) throws SQLException{
+
+    private Plantings getPlantingsWithoutClass(ResultSet resultSet) throws SQLException {
         Plantings plantings = new Plantings();
-        
-        return null;
+        HeadInstitutionLands headInstitutionLand = new HeadInstitutionLands();
+        Lands land = new Lands();
+
+        plantings.setId(resultSet.getLong("id"));
+
+        land.setLandName(resultSet.getString("landName"));
+
+        headInstitutionLand.setLand(land);
+
+        plantings.setHeadInstitutionLand(headInstitutionLand);
+
+        plantings.setTotalVolunteers(resultSet.getInt("totalVolunteers"));
+        plantings.setPlantingCosts(resultSet.getDouble("plantingCosts"));
+        plantings.setPlantingProfit(resultSet.getDouble("plantingProfit"));
+        plantings.setPlantingWeight(resultSet.getDouble("plantingWeight"));
+
+        plantings.setApproximateHarvestDate(
+            resultSet.getObject("approximatedHarvestDate", LocalDateTime.class)
+        );
+
+        plantings.setCreatedAt(
+                resultSet.getObject("createdAt", LocalDateTime.class)
+        );
+
+        return plantings;
     }
 }

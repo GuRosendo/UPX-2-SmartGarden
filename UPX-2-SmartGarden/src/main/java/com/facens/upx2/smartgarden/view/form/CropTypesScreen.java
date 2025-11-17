@@ -36,6 +36,40 @@ public class CropTypesScreen extends javax.swing.JFrame {
         this.institutionId = institutionId;
         
         this.loadData(this.institutionId);
+        
+        BackgroundImage.setIcon( new javax.swing.ImageIcon( getClass().getResource("/com/facens/upx2/smartgarden/view/images/CropTypes.png") ) );
+        
+        jButtonBack.setOpaque(false);
+        jButtonBack.setBackground(new java.awt.Color(0, 0, 0, 0)); 
+        jButtonBack.setBorder(null); 
+        
+        jDeleteButton.setOpaque(false);
+        jDeleteButton.setBackground(new java.awt.Color(0, 0, 0, 0)); 
+        jDeleteButton.setBorder(null); 
+        
+        jButtonRegister.setOpaque(false);
+        jButtonRegister.setBackground(new java.awt.Color(0, 0, 0, 0)); 
+        jButtonRegister.setBorder(null); 
+        
+        jSearchButton.setOpaque(false);
+        jSearchButton.setBackground(new java.awt.Color(0, 0, 0, 0)); 
+        jSearchButton.setBorder(null); 
+        
+        jNameTextField1.setOpaque(false);
+        jNameTextField1.setBackground(new java.awt.Color(0, 0, 0, 0)); 
+        jNameTextField1.setBorder(null); 
+        
+        jStartDateTextField.setOpaque(false);
+        jStartDateTextField.setBackground(new java.awt.Color(0, 0, 0, 0)); 
+        jStartDateTextField.setBorder(null); 
+        
+        jEndDateTextField.setOpaque(false);
+        jEndDateTextField.setBackground(new java.awt.Color(0, 0, 0, 0)); 
+        jEndDateTextField.setBorder(null); 
+        
+        jSearchTextField.setOpaque(false);
+        jSearchTextField.setBackground(new java.awt.Color(0, 0, 0, 0)); 
+        jSearchTextField.setBorder(null); 
     }
 
     /**
@@ -51,28 +85,24 @@ public class CropTypesScreen extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
         jButtonBack = new javax.swing.JButton();
-        jLabel2 = new javax.swing.JLabel();
         jStartDateTextField = new javax.swing.JTextField();
-        jLabel5 = new javax.swing.JLabel();
         jNameTextField1 = new javax.swing.JTextField();
         jSearchTextField = new javax.swing.JTextField();
-        jLabel9 = new javax.swing.JLabel();
         jSearchButton = new javax.swing.JButton();
         jDeleteButton = new javax.swing.JButton();
         jEndDateTextField = new javax.swing.JTextField();
-        jLabel10 = new javax.swing.JLabel();
+        BackgroundImage = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(1600, 754));
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jButtonRegister.setText("Cadastrar Tipo Plantio");
         jButtonRegister.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButtonRegisterActionPerformed(evt);
             }
         });
-        getContentPane().add(jButtonRegister, new org.netbeans.lib.awtextra.AbsoluteConstraints(490, 180, -1, -1));
+        getContentPane().add(jButtonRegister, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 190, 170, 40));
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -84,47 +114,35 @@ public class CropTypesScreen extends javax.swing.JFrame {
         ));
         jScrollPane1.setViewportView(jTable1);
 
-        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 410, 1580, 340));
+        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 380, 940, 360));
 
-        jButtonBack.setText("Voltar");
         jButtonBack.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButtonBackActionPerformed(evt);
             }
         });
-        getContentPane().add(jButtonBack, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 20, -1, -1));
+        getContentPane().add(jButtonBack, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 10, 40, 40));
+        getContentPane().add(jStartDateTextField, new org.netbeans.lib.awtextra.AbsoluteConstraints(627, 144, 290, 30));
+        getContentPane().add(jNameTextField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 144, 290, 30));
+        getContentPane().add(jSearchTextField, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 325, 827, 30));
 
-        jLabel2.setText("Nome");
-        getContentPane().add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 70, -1, -1));
-        getContentPane().add(jStartDateTextField, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 90, 300, -1));
-
-        jLabel5.setText("Data inicial de plantio apropriada");
-        getContentPane().add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 70, -1, -1));
-        getContentPane().add(jNameTextField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 90, 170, -1));
-        getContentPane().add(jSearchTextField, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 370, 170, -1));
-
-        jLabel9.setText("Pesquisar");
-        getContentPane().add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 350, -1, -1));
-
-        jSearchButton.setText("Buscar");
         jSearchButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jSearchButtonActionPerformed(evt);
             }
         });
-        getContentPane().add(jSearchButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 370, -1, -1));
+        getContentPane().add(jSearchButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(1150, 325, 32, 30));
 
-        jDeleteButton.setText("Excluir Tipo Plantio Selecionado");
         jDeleteButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jDeleteButtonActionPerformed(evt);
             }
         });
-        getContentPane().add(jDeleteButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(700, 180, -1, -1));
-        getContentPane().add(jEndDateTextField, new org.netbeans.lib.awtextra.AbsoluteConstraints(570, 90, 300, -1));
+        getContentPane().add(jDeleteButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(1190, 325, 32, 30));
+        getContentPane().add(jEndDateTextField, new org.netbeans.lib.awtextra.AbsoluteConstraints(944, 144, 290, 30));
 
-        jLabel10.setText("Data final de plantio apropriada");
-        getContentPane().add(jLabel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(570, 70, -1, -1));
+        BackgroundImage.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/facens/upx2/smartgarden/view/images/CropTypes.png"))); // NOI18N
+        getContentPane().add(BackgroundImage, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1600, 754));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -137,10 +155,6 @@ public class CropTypesScreen extends javax.swing.JFrame {
         this.cropTypesController.registerCropType(name, startDate, endDate, this.institutionId);
     }//GEN-LAST:event_jButtonRegisterActionPerformed
 
-    private void jButtonBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonBackActionPerformed
-        this.dispose();
-    }//GEN-LAST:event_jButtonBackActionPerformed
-
     private void jSearchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jSearchButtonActionPerformed
         String search = this.getjSearchTextField().getText();
         
@@ -151,15 +165,16 @@ public class CropTypesScreen extends javax.swing.JFrame {
         cropTypesController.deleteSelectedCropType(this.institutionId);
     }//GEN-LAST:event_jDeleteButtonActionPerformed
 
+    private void jButtonBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonBackActionPerformed
+        this.dispose();
+    }//GEN-LAST:event_jButtonBackActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel BackgroundImage;
     private javax.swing.JButton jButtonBack;
     private javax.swing.JButton jButtonRegister;
     private javax.swing.JButton jDeleteButton;
     private javax.swing.JTextField jEndDateTextField;
-    private javax.swing.JLabel jLabel10;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel9;
     private javax.swing.JTextField jNameTextField1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JButton jSearchButton;

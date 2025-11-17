@@ -6,13 +6,16 @@ package com.facens.upx2.smartgarden.model.dao;
 
 import com.facens.upx2.smartgarden.model.database.connection.DatabaseConnection;
 import com.facens.upx2.smartgarden.model.database.connection.MySQLDatabaseConnection;
-import com.facens.upx2.smartgarden.model.domain.Addresses;
 import com.facens.upx2.smartgarden.model.domain.HeadInstitutionLands;
 import com.facens.upx2.smartgarden.model.domain.Institutions;
 import com.facens.upx2.smartgarden.model.domain.Lands;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -114,5 +117,73 @@ public class HeadInstitutionLandsDao{
         }finally{
             databaseConnection.closeConnection();
         }
+    }
+    
+    public HeadInstitutionLands searchHeadInstitutionLandById(Long institutionId){
+        String querySearch = "SELECT * FROM headInstitutionLands WHERE id = ? AND deletedAt IS NULL;";
+        List<HeadInstitutionLands> headInstitutionLandsList = new ArrayList<>();
+
+        try(Connection connection = databaseConnection.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(querySearch)){
+            preparedStatement.setLong(1, institutionId);
+            
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while(resultSet.next()){
+                headInstitutionLandsList.add(getHeadInstitutionLand(resultSet));
+            }
+
+        }catch(SQLException e){
+            System.err.println("Erro ao listar tipo de plantio por ID: " + e.getMessage());
+        }finally{
+            databaseConnection.closeConnection();
+        }
+
+        return null;
+    }
+    
+    public HeadInstitutionLands getHeadInstitutionLandByInstitutionAndLand(Long institutionId, Long landId){
+        String querySearch = "SELECT * FROM headInstitutionLands WHERE institution = ? AND land = ? AND deletedAt IS NULL;";
+        HeadInstitutionLands result = null;
+
+        try(Connection connection = databaseConnection.getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(querySearch)){
+
+            preparedStatement.setLong(1, institutionId);
+            preparedStatement.setLong(2, landId);
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if(resultSet.next()){
+                result = getHeadInstitutionLand(resultSet);
+            }
+
+        }catch(SQLException e){
+            System.err.println("Erro ao listar tipo de plantio por ID da instuição e terreno: " + e.getMessage());
+        }finally{
+            databaseConnection.closeConnection();
+        }
+
+        return result;
+    }
+    
+    private HeadInstitutionLands getHeadInstitutionLand(ResultSet resultSet) throws SQLException {
+        HeadInstitutionLands head = new HeadInstitutionLands();
+
+        head.setId(resultSet.getLong("id"));
+
+        long institutionId = resultSet.getLong("institution");
+        long landId = resultSet.getLong("land");
+
+        Institutions institution = new InstitutionsDao().searchInstitutionById(institutionId);
+        Lands land = new LandsDao().searchLandById(landId);
+
+        head.setInstitution(institution);
+        head.setLand(land);
+
+        head.setCreatedAt(resultSet.getObject("createdAt", LocalDateTime.class));
+        head.setUpdatedAt(resultSet.getObject("updatedAt", LocalDateTime.class));
+        head.setDeletedAt(resultSet.getObject("deletedAt", LocalDateTime.class));
+
+        return head;
     }
 }

@@ -214,6 +214,28 @@ public class LandsDao{
 
         return landsList;
     }
+    
+    public Lands searchLandById(Long landId){
+        String querySearch = "SELECT * FROM lands WHERE id = ? AND deletedAt IS NULL";
+
+        try(Connection connection = databaseConnection.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(querySearch)){
+
+            preparedStatement.setLong(1, landId);
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if(resultSet.next()){
+                return getLand(resultSet);
+            }
+
+        }catch(SQLException e){
+            System.err.println("Erro ao listar terrenos: " + e.getMessage());
+        }finally{
+            databaseConnection.closeConnection();
+        }
+
+        return null; 
+    }
    
     private Lands getLand(ResultSet resultSet) throws SQLException{
         Lands lands = new Lands();

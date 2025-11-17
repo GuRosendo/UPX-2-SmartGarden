@@ -5,11 +5,11 @@
 package com.facens.upx2.smartgarden.view.form;
 
 import com.facens.upx2.smartgarden.controller.PlantingsController;
-import com.facens.upx2.smartgarden.controller.UsersController;
 import com.facens.upx2.smartgarden.controller.helper.PlantingsControllerHelper;
-import com.facens.upx2.smartgarden.controller.helper.UsersControllerHelper;
+import com.facens.upx2.smartgarden.model.helper.domain.ComboItem;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 
@@ -61,11 +61,13 @@ public class PlantingsScreen extends javax.swing.JFrame {
         jTable1 = new javax.swing.JTable();
         jSearchTextField1 = new javax.swing.JTextField();
         jLabel10 = new javax.swing.JLabel();
-        jComboBox1 = new javax.swing.JComboBox<>();
+        jComboBoxActions = new javax.swing.JComboBox<>();
         jLabel11 = new javax.swing.JLabel();
         jButtonBack1 = new javax.swing.JButton();
-        jComboBox2 = new javax.swing.JComboBox<>();
+        jComboBoxLands = new javax.swing.JComboBox<ComboItem>() ;
         jLabel12 = new javax.swing.JLabel();
+        jCropTypeComboBox = new javax.swing.JComboBox<ComboItem>() ;
+        jLabel13 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -111,8 +113,9 @@ public class PlantingsScreen extends javax.swing.JFrame {
         jLabel10.setText("Pesquisar");
         getContentPane().add(jLabel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 350, -1, -1));
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Adicionar Voluntario", "Adicionar Custos", "Adicionar Producoes", "Finalizar Producao", "Deletar Horta" }));
-        getContentPane().add(jComboBox1, new org.netbeans.lib.awtextra.AbsoluteConstraints(650, 180, -1, -1));
+        jComboBoxActions.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Ação", "Adicionar Voluntario", "Adicionar Custos", "Adicionar Producoes", "Finalizar Producao", "Deletar Horta" }));
+        jComboBoxActions.setToolTipText("");
+        getContentPane().add(jComboBoxActions, new org.netbeans.lib.awtextra.AbsoluteConstraints(650, 180, -1, -1));
 
         jLabel11.setText("Terreno");
         getContentPane().add(jLabel11, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 80, -1, -1));
@@ -125,25 +128,80 @@ public class PlantingsScreen extends javax.swing.JFrame {
         });
         getContentPane().add(jButtonBack1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 20, -1, -1));
 
-        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Selecione um terreno" }));
-        getContentPane().add(jComboBox2, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 100, -1, -1));
+        jComboBoxLands.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Selecione um terreno" }));
+        getContentPane().add(jComboBoxLands, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 100, -1, -1));
 
         jLabel12.setText("Data Aproximada da Colheita");
         getContentPane().add(jLabel12, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 80, -1, -1));
+
+        jCropTypeComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Selecione um tipo de plantio" }));
+        getContentPane().add(jCropTypeComboBox, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 100, -1, -1));
+
+        jLabel13.setText("Tipo Plantio");
+        getContentPane().add(jLabel13, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 80, -1, -1));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButtonAdvanceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAdvanceActionPerformed
-        this.dispose();
+        String action = (String) jComboBoxActions.getSelectedItem();
+
+        if(action == null){
+            return;
+        } 
+    
+        switch(action){
+            case "Adicionar Voluntario":
+                System.out.println(action);
+                break;
+
+            case "Adicionar Custos":
+                System.out.println(action);
+                break;
+
+            case "Adicionar Producoes":
+                System.out.println(action);
+                break;
+
+            case "Finalizar Producao":
+                System.out.println(action);;
+                break;
+
+            case "Deletar Horta":
+                System.out.println(action);
+                break;
+
+            default:
+                break;
+        }
     }//GEN-LAST:event_jButtonAdvanceActionPerformed
 
     private void jButtonRegisterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonRegisterActionPerformed
-       
+        String approximatedHarvestDate = this.getjApproximatedHarvestDateTextField().getText();
+        
+        Long landId = 0L;
+
+        Object selectedItem = jComboBoxLands.getSelectedItem();
+
+        if(selectedItem instanceof ComboItem comboItem){
+            landId = comboItem.getId();
+        }
+        
+        Long cropTypeId = 0L;
+
+        Object selectedItem2 = jCropTypeComboBox.getSelectedItem();
+
+        if(selectedItem2 instanceof ComboItem comboItem){
+            cropTypeId = comboItem.getId();
+        }
+
+        this.plantingsController.registerPlanting(approximatedHarvestDate, landId, cropTypeId, this.institutionId);
     }//GEN-LAST:event_jButtonRegisterActionPerformed
 
     private void jSearchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jSearchButtonActionPerformed
-       
+       String search = this.getjSearchTextField1().getText();
+
+       this.loadDataWithSearch(this.institutionId, search);
     }//GEN-LAST:event_jSearchButtonActionPerformed
 
     private void jButtonBack1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonBack1ActionPerformed
@@ -152,6 +210,7 @@ public class PlantingsScreen extends javax.swing.JFrame {
 
     private void loadData(long institutionId){
         this.plantingsController.loadPlantings(institutionId);
+        this.plantingsController.loadCropTypes(institutionId);
         this.plantingsController.loadLands(institutionId);
     }
     
@@ -191,28 +250,36 @@ public class PlantingsScreen extends javax.swing.JFrame {
         this.jButtonRegister = jButtonRegister;
     }
 
-    public JComboBox<String> getjComboBox1() {
-        return jComboBox1;
-    }
-
-    public void setjComboBox1(JComboBox<String> jComboBox1) {
-        this.jComboBox1 = jComboBox1;
-    }
-
-    public JComboBox<String> getjComboBox2() {
-        return jComboBox2;
-    }
-
-    public void setjComboBox2(JComboBox<String> jComboBox2) {
-        this.jComboBox2 = jComboBox2;
-    }
-
     public JButton getjSearchButton() {
         return jSearchButton;
     }
 
     public void setjSearchButton(JButton jSearchButton) {
         this.jSearchButton = jSearchButton;
+    }
+
+    public JComboBox<String> getjComboBoxActions() {
+        return jComboBoxActions;
+    }
+
+    public void setjComboBoxActions(JComboBox<String> jComboBoxActions) {
+        this.jComboBoxActions = jComboBoxActions;
+    }
+
+    public JComboBox<ComboItem> getjComboBoxLands(){
+        return jComboBoxLands;
+    }
+
+    public void setjComboBoxLands(JComboBox<ComboItem> jComboBoxLands){
+        this.jComboBoxLands = jComboBoxLands;
+    }
+
+    public JComboBox<ComboItem> getjCropTypeComboBox() {
+        return jCropTypeComboBox;
+    }
+
+    public void setjCropTypeComboBox(JComboBox<ComboItem> jCropTypeComboBox) {
+        this.jCropTypeComboBox = jCropTypeComboBox;
     }
 
     public JTextField getjSearchTextField1() {
@@ -236,11 +303,13 @@ public class PlantingsScreen extends javax.swing.JFrame {
     private javax.swing.JButton jButtonAdvance;
     private javax.swing.JButton jButtonBack1;
     private javax.swing.JButton jButtonRegister;
-    private javax.swing.JComboBox<String> jComboBox1;
-    private javax.swing.JComboBox<String> jComboBox2;
+    private javax.swing.JComboBox<String> jComboBoxActions;
+    private javax.swing.JComboBox jComboBoxLands;
+    private javax.swing.JComboBox jCropTypeComboBox;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel13;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JButton jSearchButton;
     private javax.swing.JTextField jSearchTextField1;

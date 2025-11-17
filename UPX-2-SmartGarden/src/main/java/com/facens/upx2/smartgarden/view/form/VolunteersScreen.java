@@ -40,6 +40,8 @@ public class VolunteersScreen extends javax.swing.JFrame implements AddressScree
         this.institutionId = institutionId;
                 
         this.loadData(this.institutionId);
+        
+        BackgroundImage.setIcon( new javax.swing.ImageIcon( getClass().getResource("/com/facens/upx2/smartgarden/view/images/Volunteers.png") ) );
     }
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(VolunteersScreen.class.getName());
@@ -55,45 +57,32 @@ public class VolunteersScreen extends javax.swing.JFrame implements AddressScree
 
         jButtonBack = new javax.swing.JButton();
         jCEPTextField = new javax.swing.JTextField();
-        jLabel5 = new javax.swing.JLabel();
         jCountryComboBox = new javax.swing.JComboBox<ComboItem>() ;
-        jLabel3 = new javax.swing.JLabel();
         jStateComboBox = new javax.swing.JComboBox<ComboItem>() ;
-        jLabel4 = new javax.swing.JLabel();
         jCityComboBox = new javax.swing.JComboBox<ComboItem>() ;
-        jLabel7 = new javax.swing.JLabel();
         jNeighborhoodNameTextField = new javax.swing.JTextField();
-        jLabel6 = new javax.swing.JLabel();
         jStreetTextField = new javax.swing.JTextField();
-        jLabel8 = new javax.swing.JLabel();
         jNumberTextField = new javax.swing.JTextField();
-        jLabel1 = new javax.swing.JLabel();
         jEmailTextField = new javax.swing.JTextField();
-        jLabel11 = new javax.swing.JLabel();
         jFullNameTextField = new javax.swing.JTextField();
-        jLabel10 = new javax.swing.JLabel();
         jButtonRegister = new javax.swing.JButton();
         jDeleteButton = new javax.swing.JButton();
         jSearchButton = new javax.swing.JButton();
         jSearchTextField = new javax.swing.JTextField();
-        jLabel9 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
+        BackgroundImage = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jButtonBack.setText("Voltar");
         jButtonBack.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButtonBackActionPerformed(evt);
             }
         });
-        getContentPane().add(jButtonBack, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 20, -1, -1));
-        getContentPane().add(jCEPTextField, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 90, 170, -1));
-
-        jLabel5.setText("CEP");
-        getContentPane().add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 70, -1, -1));
+        getContentPane().add(jButtonBack, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 10, 40, 40));
+        getContentPane().add(jCEPTextField, new org.netbeans.lib.awtextra.AbsoluteConstraints(650, 150, 170, -1));
 
         jCountryComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Selecione um País" }));
         jCountryComboBox.setAutoscrolls(true);
@@ -102,10 +91,7 @@ public class VolunteersScreen extends javax.swing.JFrame implements AddressScree
                 jCountryComboBoxActionPerformed(evt);
             }
         });
-        getContentPane().add(jCountryComboBox, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 90, 120, -1));
-
-        jLabel3.setText("País");
-        getContentPane().add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 70, -1, -1));
+        getContentPane().add(jCountryComboBox, new org.netbeans.lib.awtextra.AbsoluteConstraints(970, 150, 120, -1));
 
         jStateComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Selecione um estado" }));
         jStateComboBox.addActionListener(new java.awt.event.ActionListener() {
@@ -113,36 +99,15 @@ public class VolunteersScreen extends javax.swing.JFrame implements AddressScree
                 jStateComboBoxActionPerformed(evt);
             }
         });
-        getContentPane().add(jStateComboBox, new org.netbeans.lib.awtextra.AbsoluteConstraints(560, 90, 190, -1));
-
-        jLabel4.setText("Estado");
-        getContentPane().add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(560, 70, -1, -1));
+        getContentPane().add(jStateComboBox, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 220, 190, -1));
 
         jCityComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Selecione uma cidade" }));
-        getContentPane().add(jCityComboBox, new org.netbeans.lib.awtextra.AbsoluteConstraints(780, 90, 190, -1));
-
-        jLabel7.setText("Cidade");
-        getContentPane().add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(780, 70, -1, -1));
-        getContentPane().add(jNeighborhoodNameTextField, new org.netbeans.lib.awtextra.AbsoluteConstraints(1000, 90, 170, -1));
-
-        jLabel6.setText("Bairro");
-        getContentPane().add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(1000, 70, -1, -1));
-        getContentPane().add(jStreetTextField, new org.netbeans.lib.awtextra.AbsoluteConstraints(1200, 90, 170, -1));
-
-        jLabel8.setText("Rua");
-        getContentPane().add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(1200, 70, -1, -1));
-        getContentPane().add(jNumberTextField, new org.netbeans.lib.awtextra.AbsoluteConstraints(1400, 90, 170, -1));
-
-        jLabel1.setText("Número");
-        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(1400, 70, -1, -1));
-        getContentPane().add(jEmailTextField, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 140, 170, -1));
-
-        jLabel11.setText("Email");
-        getContentPane().add(jLabel11, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 120, -1, -1));
-        getContentPane().add(jFullNameTextField, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 90, 170, -1));
-
-        jLabel10.setText("Nome Completo");
-        getContentPane().add(jLabel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 70, -1, -1));
+        getContentPane().add(jCityComboBox, new org.netbeans.lib.awtextra.AbsoluteConstraints(650, 220, 190, -1));
+        getContentPane().add(jNeighborhoodNameTextField, new org.netbeans.lib.awtextra.AbsoluteConstraints(970, 220, 170, -1));
+        getContentPane().add(jStreetTextField, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 290, 170, -1));
+        getContentPane().add(jNumberTextField, new org.netbeans.lib.awtextra.AbsoluteConstraints(660, 290, 170, -1));
+        getContentPane().add(jEmailTextField, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 360, 170, -1));
+        getContentPane().add(jFullNameTextField, new org.netbeans.lib.awtextra.AbsoluteConstraints(980, 290, 170, -1));
 
         jButtonRegister.setText("Cadastrar Voluntário");
         jButtonRegister.addActionListener(new java.awt.event.ActionListener() {
@@ -150,7 +115,7 @@ public class VolunteersScreen extends javax.swing.JFrame implements AddressScree
                 jButtonRegisterActionPerformed(evt);
             }
         });
-        getContentPane().add(jButtonRegister, new org.netbeans.lib.awtextra.AbsoluteConstraints(490, 180, -1, -1));
+        getContentPane().add(jButtonRegister, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 420, -1, -1));
 
         jDeleteButton.setText("Excluir Voluntário Selecionado");
         jDeleteButton.addActionListener(new java.awt.event.ActionListener() {
@@ -158,7 +123,7 @@ public class VolunteersScreen extends javax.swing.JFrame implements AddressScree
                 jDeleteButtonActionPerformed(evt);
             }
         });
-        getContentPane().add(jDeleteButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(700, 180, -1, -1));
+        getContentPane().add(jDeleteButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(1110, 510, -1, -1));
 
         jSearchButton.setText("Buscar");
         jSearchButton.addActionListener(new java.awt.event.ActionListener() {
@@ -166,11 +131,8 @@ public class VolunteersScreen extends javax.swing.JFrame implements AddressScree
                 jSearchButtonActionPerformed(evt);
             }
         });
-        getContentPane().add(jSearchButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 370, -1, -1));
-        getContentPane().add(jSearchTextField, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 370, 170, -1));
-
-        jLabel9.setText("Pesquisar");
-        getContentPane().add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 350, -1, -1));
+        getContentPane().add(jSearchButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(1140, 540, -1, -1));
+        getContentPane().add(jSearchTextField, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 540, 170, -1));
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -182,7 +144,10 @@ public class VolunteersScreen extends javax.swing.JFrame implements AddressScree
         ));
         jScrollPane1.setViewportView(jTable1);
 
-        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 410, 1580, 340));
+        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 600, 930, 140));
+
+        BackgroundImage.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/facens/upx2/smartgarden/view/images/Volunteers.png"))); // NOI18N
+        getContentPane().add(BackgroundImage, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1600, 754));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -377,13 +342,14 @@ public class VolunteersScreen extends javax.swing.JFrame implements AddressScree
         jCountryComboBox.setSelectedIndex(0);
         
         jStateComboBox.removeAllItems();
-        jStateComboBox.addItem(new ComboItem(0L, "Estado"));
+        jStateComboBox.addItem(new ComboItem(0L, ""));
 
         jCityComboBox.removeAllItems();
-        jCityComboBox.addItem(new ComboItem(0L, "Cidade"));
+        jCityComboBox.addItem(new ComboItem(0L, ""));
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel BackgroundImage;
     private javax.swing.JButton jButtonBack;
     private javax.swing.JButton jButtonRegister;
     private javax.swing.JTextField jCEPTextField;
@@ -392,16 +358,6 @@ public class VolunteersScreen extends javax.swing.JFrame implements AddressScree
     private javax.swing.JButton jDeleteButton;
     private javax.swing.JTextField jEmailTextField;
     private javax.swing.JTextField jFullNameTextField;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel10;
-    private javax.swing.JLabel jLabel11;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel7;
-    private javax.swing.JLabel jLabel8;
-    private javax.swing.JLabel jLabel9;
     private javax.swing.JTextField jNeighborhoodNameTextField;
     private javax.swing.JTextField jNumberTextField;
     private javax.swing.JScrollPane jScrollPane1;
