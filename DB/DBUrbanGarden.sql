@@ -6,11 +6,11 @@ USE UPX_4_Urban_Garden;
 
 -- Tabela Países
 CREATE TABLE countries(
-  id int(11) PRIMARY KEY NOT NULL,
+  id int PRIMARY KEY NOT NULL,
   name varchar(60) DEFAULT NULL,
   name_pt varchar(60) DEFAULT NULL,
   acronym varchar(2) DEFAULT NULL,
-  bacen int(5) DEFAULT NULL
+  bacen int DEFAULT NULL
 ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO countries (id, name, name_pt, acronym, bacen) VALUES
@@ -271,11 +271,11 @@ INSERT INTO countries (id, name, name_pt, acronym, bacen) VALUES
 
 -- Tabela estados
 CREATE TABLE states(
-  id int(11) PRIMARY KEY NOT NULL,
+  id int PRIMARY KEY NOT NULL,
   name varchar(75) DEFAULT NULL,
   uf varchar(2) DEFAULT NULL,
-  ibge int(2) DEFAULT NULL,
-  country int(3) DEFAULT NULL,
+  ibge int DEFAULT NULL,
+  country int DEFAULT NULL,
   ddd varchar(50) DEFAULT NULL,
   CONSTRAINT fk_states_country FOREIGN KEY(country) REFERENCES countries(id) ON DELETE CASCADE
 ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -312,10 +312,10 @@ INSERT INTO states (id, name, uf, ibge, country, ddd) VALUES
 
 -- Tabelas cidades
 CREATE TABLE cities(
-  id int(11) PRIMARY KEY NOT NULL,
+  id int PRIMARY KEY NOT NULL,
   name varchar(120) DEFAULT NULL,
-  uf int(2) DEFAULT NULL,
-  ibge int(7) DEFAULT NULL,
+  uf int DEFAULT NULL,
+  ibge int DEFAULT NULL,
   CONSTRAINT fk_cities_uf FOREIGN KEY(uf) REFERENCES states(id) ON DELETE CASCADE
 ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -5929,13 +5929,16 @@ CREATE TABLE addresses(
     neighborhoodName VARCHAR(85) NOT NULL,
     streetName VARCHAR(50) NOT NULL,
     number VARCHAR(20) NOT NULL,
-	type TINYINT CHECK (type IN (1, 2, 3)) NOT NULL COMMENT "1 - Usuario; 2 - Instituicao; 3 - Terreno",
+	type TINYINT UNSIGNED NOT NULL COMMENT "1 - Usuario/Voluntario; 2 - Instituicao; 3 - Terreno",
     createdAt DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
     deletedAt DATETIME NULL,
     updatedAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     CONSTRAINT fk_addresses_country FOREIGN KEY(country) REFERENCES countries(id) ON DELETE CASCADE,
     CONSTRAINT fk_addresses_state FOREIGN KEY(state) REFERENCES states(id) ON DELETE CASCADE,
-    CONSTRAINT fk_addresses_city FOREIGN KEY(city) REFERENCES cities(id) ON DELETE CASCADE
+    CONSTRAINT fk_addresses_city FOREIGN KEY(city) REFERENCES cities(id) ON DELETE CASCADE,
+    INDEX(type),
+    INDEX(deletedAt),
+    INDEX(createdAt)
 ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Tabela instituicoes
@@ -5943,10 +5946,13 @@ CREATE TABLE institutions(
 	id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
     institutionAddress INT NOT NULL,
     institutionName VARCHAR(255) NOT NULL,
+    institutionCNPJ VARCHAR(14) NOT NULL,
     createdAt DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
     deletedAt DATETIME NULL,
     updatedAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    CONSTRAINT fk_institutions_institutionAddress FOREIGN KEY(institutionAddress) REFERENCES addresses(id) ON DELETE CASCADE
+    CONSTRAINT fk_institutions_institutionAddress FOREIGN KEY(institutionAddress) REFERENCES addresses(id) ON DELETE CASCADE,
+    INDEX(deletedAt),
+    INDEX(createdAt)
 ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Tabela usuarios
@@ -5955,14 +5961,19 @@ CREATE TABLE users(
     userAddress INT NOT NULL,
     institution INT NULL, -- Preenchido somente quando o usuario faz parte de uma instituicao
     fullName VARCHAR(255) NOT NULL,
-    userName VARCHAR(50) NOT NULL, 
-    userEmail VARCHAR(255) NOT NULL,
-    userPassword VARCHAR(255) NOT NULL,
+    userName VARCHAR(50) NULL, 
+    userEmail VARCHAR(190) NOT NULL,
+    userPassword VARCHAR(190) NULL,
+	isAdmin TINYINT UNSIGNED NULL COMMENT "1 - Admin", 
     createdAt DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
     deletedAt DATETIME NULL,
     updatedAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     CONSTRAINT fk_users_userAddress FOREIGN KEY(userAddress) REFERENCES addresses(id) ON DELETE CASCADE,
-    CONSTRAINT fk_users_userInstitution FOREIGN KEY(institution) REFERENCES institutions(id) ON DELETE CASCADE
+    CONSTRAINT fk_users_userInstitution FOREIGN KEY(institution) REFERENCES institutions(id) ON DELETE CASCADE,
+    INDEX(userEmail),
+    INDEX(userPassword),
+	INDEX(deletedAt),
+    INDEX(createdAt)
 ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Tabela terrenos livres
@@ -5973,7 +5984,9 @@ CREATE TABLE lands(
 	createdAt DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
     deletedAt DATETIME NULL,
     updatedAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    CONSTRAINT fk_lands_landAddress FOREIGN KEY(landAddress) REFERENCES addresses(id) ON DELETE CASCADE
+    CONSTRAINT fk_lands_landAddress FOREIGN KEY(landAddress) REFERENCES addresses(id) ON DELETE CASCADE,
+    INDEX(deletedAt),
+    INDEX(createdAt)
 ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Tabela instituicoes chefes dos terrenos
@@ -5985,43 +5998,53 @@ CREATE TABLE headInstitutionLands(
     deletedAt DATETIME NULL,
     updatedAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     CONSTRAINT fk_headInstitutionLands_institution FOREIGN KEY(institution) REFERENCES institutions(id) ON DELETE CASCADE,
-    CONSTRAINT fk_headInstitutionLands_land FOREIGN KEY(land) REFERENCES lands(id) ON DELETE CASCADE
+    CONSTRAINT fk_headInstitutionLands_land FOREIGN KEY(land) REFERENCES lands(id) ON DELETE CASCADE,
+    INDEX(deletedAt),
+    INDEX(createdAt)
 ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Tabela tipos plantas
 CREATE TABLE cropTypes(
     id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
+    institution INT NOT NULL, 
     name VARCHAR(255) NOT NULL,
     seedingDateStart DATE NULL,
     seedingDateEnd DATE NULL,
 	createdAt DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
     deletedAt DATETIME NULL,
-    updatedAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
+    updatedAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+	CONSTRAINT fk_cropTypes_institution FOREIGN KEY(institution) REFERENCES institutions(id) ON DELETE CASCADE,
+    INDEX(deletedAt),
+    INDEX(createdAt)
+) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Tabela de plantios
 CREATE TABLE plantings(
 	id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
 	headInstitutionLand INT NOT NULL,
     cropType INT NOT NULL,
-    approximateHarvestDate DATETIME NULL,
+    approximatedHarvestDate DATE NULL,
     createdAt DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
     deletedAt DATETIME NULL,
     updatedAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     CONSTRAINT fk_plantings_headInstitutionLand FOREIGN KEY(headInstitutionLand) REFERENCES headInstitutionLands(id) ON DELETE CASCADE,
-    CONSTRAINT fk_plantings_cropTypes FOREIGN KEY(cropType) REFERENCES cropTypes(id) ON DELETE CASCADE
+    CONSTRAINT fk_plantings_cropTypes FOREIGN KEY(cropType) REFERENCES cropTypes(id) ON DELETE CASCADE,
+    INDEX(deletedAt),
+    INDEX(createdAt)
 ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Tabela de voluntarios no terreno
 CREATE TABLE volunteerPlantings(
 	id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
     volunteer INT NOT NULL,
-    headInstitutionLand INT NOT NULL,
+    headInstitutionLand INT NULL,
     createdAt DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
     deletedAt DATETIME NULL,
     updatedAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    CONSTRAINT fk_volunteerPlantings_Volunteer FOREIGN KEY(volunteer) REFERENCES users(id) ON DELETE CASCADE,
-    CONSTRAINT fk_volunteerPlantings_headInstitutionLand FOREIGN KEY(headInstitutionLand) REFERENCES headInstitutionLands(id) ON DELETE CASCADE
+    CONSTRAINT fk_volunteerPlantings_volunteer FOREIGN KEY(volunteer) REFERENCES users(id) ON DELETE CASCADE,
+    CONSTRAINT fk_volunteerPlantings_headInstitutionLand FOREIGN KEY(headInstitutionLand) REFERENCES headInstitutionLands(id) ON DELETE CASCADE,
+    INDEX(deletedAt),
+    INDEX(createdAt)
 ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Tabela custos plantacao
@@ -6034,16 +6057,22 @@ CREATE TABLE plantingCosts(
 	createdAt DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
     deletedAt DATETIME NULL,
     updatedAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    CONSTRAINT fk_plantingCosts_headInstitutionLand FOREIGN KEY(headInstitutionLand) REFERENCES headInstitutionLands(id) ON DELETE CASCADE
+    CONSTRAINT fk_plantingCosts_headInstitutionLand FOREIGN KEY(headInstitutionLand) REFERENCES headInstitutionLands(id) ON DELETE CASCADE,
+    INDEX(deletedAt),
+    INDEX(createdAt)
 ) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Tabela de producoes da plantacao
-CREATE TABLE landProductions(
+CREATE TABLE plantingsProductions(
 	id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
     headInstitutionLand INT NULL,
     profit DECIMAL(10,2) NOT NULL,
+    weight DECIMAL(10,2) NULL,
+    finishedAt DATETIME NULL,
     createdAt DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
     deletedAt DATETIME NULL,
     updatedAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    CONSTRAINT fk_landProductions_headInstitutionLand FOREIGN KEY(headInstitutionLand) REFERENCES headInstitutionLands(id) ON DELETE CASCADE
+    CONSTRAINT fk_landProductions_headInstitutionLand FOREIGN KEY(headInstitutionLand) REFERENCES headInstitutionLands(id) ON DELETE CASCADE,
+    INDEX(deletedAt),
+    INDEX(createdAt)
 );
