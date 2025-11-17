@@ -18,6 +18,9 @@ public class Plantings{
     private LocalDateTime createdAt;
     private LocalDateTime deletedAt; 
     private LocalDateTime updatedAt;
+    
+    public Plantings(){
+    }
 
     public Plantings(Long id, HeadInstitutionLands headInstitutionLand, CropTypes cropType, LocalDateTime approximateHarvestDate, LocalDateTime createdAt, LocalDateTime deletedAt, LocalDateTime updatedAt){
         this.id = id;

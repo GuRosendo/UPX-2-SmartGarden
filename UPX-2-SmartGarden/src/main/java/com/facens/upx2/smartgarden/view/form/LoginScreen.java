@@ -25,7 +25,7 @@ public class LoginScreen extends javax.swing.JFrame{
         setUndecorated(true); 
         initComponents(); 
         
-        BackgroundImage.setIcon( new javax.swing.ImageIcon( getClass().getResource("/com/facens/upx2/smartgarden/view/images/LoginScreenBackground.jpeg") ) );
+        BackgroundImage.setIcon( new javax.swing.ImageIcon( getClass().getResource("/com/facens/upx2/smartgarden/view/images/Login.png") ) );
         
         setSize(1600, 754);
         setLocationRelativeTo(null);
@@ -81,9 +81,9 @@ public class LoginScreen extends javax.swing.JFrame{
 
         PasswordText.setBackground(new java.awt.Color(0, 0, 0));
         PasswordText.setBorder(null);
-        getContentPane().add(PasswordText, new org.netbeans.lib.awtextra.AbsoluteConstraints(1000, 435, 410, 40));
+        getContentPane().add(PasswordText, new org.netbeans.lib.awtextra.AbsoluteConstraints(1000, 436, 410, 40));
 
-        BackgroundImage.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/facens/upx2/smartgarden/view/images/LoginScreenBackground.jpeg"))); // NOI18N
+        BackgroundImage.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/facens/upx2/smartgarden/view/images/Login.png"))); // NOI18N
         getContentPane().add(BackgroundImage, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1600, 754));
 
         pack();

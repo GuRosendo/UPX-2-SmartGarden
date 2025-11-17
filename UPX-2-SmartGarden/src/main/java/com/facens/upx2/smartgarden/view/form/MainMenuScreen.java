@@ -26,11 +26,33 @@ public class MainMenuScreen extends javax.swing.JFrame{
         initComponents(); 
         
         this.users = users;
-        this.mainMenuController = new MainMenuController(this, users);
+        this.mainMenuController = new MainMenuController(users);
                 
         setSize(1600, 754);
         setLocationRelativeTo(null);
         setResizable(false);
+        
+        BackgroundImage.setIcon( new javax.swing.ImageIcon( getClass().getResource("/com/facens/upx2/smartgarden/view/images/Home.png") ) );
+        
+        jButton1.setOpaque(false);
+        jButton1.setBackground(new java.awt.Color(0, 0, 0, 0)); 
+        jButton1.setBorder(null); 
+        
+        jButton3.setOpaque(false);
+        jButton3.setBackground(new java.awt.Color(0, 0, 0, 0)); 
+        jButton3.setBorder(null); 
+        
+        jButton4.setOpaque(false);
+        jButton4.setBackground(new java.awt.Color(0, 0, 0, 0)); 
+        jButton4.setBorder(null); 
+        
+        jButton5.setOpaque(false);
+        jButton5.setBackground(new java.awt.Color(0, 0, 0, 0)); 
+        jButton5.setBorder(null); 
+        
+        jButton6.setOpaque(false);
+        jButton6.setBackground(new java.awt.Color(0, 0, 0, 0)); 
+        jButton6.setBorder(null); 
     }
 
     /**
@@ -43,34 +65,52 @@ public class MainMenuScreen extends javax.swing.JFrame{
     private void initComponents() {
 
         jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
+        jButton6 = new javax.swing.JButton();
         jButton5 = new javax.swing.JButton();
+        BackgroundImage = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setPreferredSize(new java.awt.Dimension(1600, 754));
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jButton1.setText("Cadastrar Horta");
-        getContentPane().add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 30, -1, -1));
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+        getContentPane().add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(880, 190, 310, 180));
 
-        jButton2.setText("Cadastrar Colheita");
-        getContentPane().add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 30, -1, -1));
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
+        getContentPane().add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(560, 380, 310, 190));
 
-        jButton3.setText("Cadastrar Usuario");
-        getContentPane().add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 30, -1, -1));
-
-        jButton4.setText("Cadastrar Terreno");
         jButton4.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 navigateToLandsScreen(evt);
             }
         });
-        getContentPane().add(jButton4, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 30, -1, -1));
+        getContentPane().add(jButton4, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 190, 310, 180));
 
-        jButton5.setText("Cadastrar Voluntario");
-        getContentPane().add(jButton5, new org.netbeans.lib.awtextra.AbsoluteConstraints(580, 30, -1, -1));
+        jButton6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton6ActionPerformed(evt);
+            }
+        });
+        getContentPane().add(jButton6, new org.netbeans.lib.awtextra.AbsoluteConstraints(560, 190, 310, 180));
+
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
+            }
+        });
+        getContentPane().add(jButton5, new org.netbeans.lib.awtextra.AbsoluteConstraints(243, 380, 310, 190));
+
+        BackgroundImage.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/facens/upx2/smartgarden/view/images/Home.png"))); // NOI18N
+        getContentPane().add(BackgroundImage, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1600, 754));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -80,11 +120,28 @@ public class MainMenuScreen extends javax.swing.JFrame{
         this.mainMenuController.navigateToLandsScreen();
     }//GEN-LAST:event_navigateToLandsScreen
 
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        this.mainMenuController.navigateToPlantingsScreen();
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
+        this.mainMenuController.navigateToCropTypesScreen();
+    }//GEN-LAST:event_jButton6ActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        this.mainMenuController.navigateToVolunteersScreen();
+    }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        this.mainMenuController.navigateToUsersScreen();
+    }//GEN-LAST:event_jButton5ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel BackgroundImage;
     private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
+    private javax.swing.JButton jButton6;
     // End of variables declaration//GEN-END:variables
 }

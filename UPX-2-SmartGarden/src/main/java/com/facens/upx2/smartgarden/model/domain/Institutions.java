@@ -14,6 +14,7 @@ public class Institutions{
     private Long id;
     private Addresses institutionAddress;
     private String institutionName;
+    private String institutionCNPJ;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private LocalDateTime deletedAt;
@@ -21,10 +22,11 @@ public class Institutions{
     public Institutions(){
     }
 
-    public Institutions(Long id, Addresses institutionAddress, String institutionName, LocalDateTime createdAt, LocalDateTime updatedAt, LocalDateTime deletedAt){
+    public Institutions(Long id, Addresses institutionAddress, String institutionName, String institutionCNPJ, LocalDateTime createdAt, LocalDateTime updatedAt, LocalDateTime deletedAt){
         this.id = id;
         this.institutionAddress = institutionAddress;
         this.institutionName = institutionName;
+        this.institutionCNPJ = institutionCNPJ;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.deletedAt = deletedAt;
@@ -52,6 +54,14 @@ public class Institutions{
 
     public void setInstitutionName(String institutionName){
         this.institutionName = institutionName;
+    }
+    
+    public String getInstitutionCNPJ(){
+        return institutionCNPJ;
+    }
+
+    public void setInstitutionCNPJ(String institutionCNPJ){
+        this.institutionCNPJ = institutionCNPJ;
     }
 
     public LocalDateTime getCreatedAt(){

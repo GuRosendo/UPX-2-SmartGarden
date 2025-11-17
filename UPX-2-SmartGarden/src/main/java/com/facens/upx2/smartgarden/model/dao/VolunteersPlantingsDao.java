@@ -2,132 +2,111 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-
 package com.facens.upx2.smartgarden.model.dao;
 
-import com.facens.upx2.smartgarden.model.database.connection.MySQLDatabaseConnection;
 import com.facens.upx2.smartgarden.model.database.connection.DatabaseConnection;
+import com.facens.upx2.smartgarden.model.database.connection.MySQLDatabaseConnection;
 import com.facens.upx2.smartgarden.model.domain.Addresses;
 import com.facens.upx2.smartgarden.model.domain.Cities;
-import com.facens.upx2.smartgarden.model.domain.Institutions;
+import com.facens.upx2.smartgarden.model.domain.VolunteerPlantings;
 import com.facens.upx2.smartgarden.model.domain.Users;
+import com.facens.upx2.smartgarden.model.domain.HeadInstitutionLands;
+import com.facens.upx2.smartgarden.model.domain.Institutions;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 /**
  *
  * @author Gustavo Rosendo Cardoso
  */
-
-public class UsersDao{
+public class VolunteersPlantingsDao{
     private final DatabaseConnection databaseConnection;
 
-    public UsersDao(){
+    public VolunteersPlantingsDao(){
         this.databaseConnection = new MySQLDatabaseConnection();
     }
-
-    public String save(Users user){
-        return (user.getId() == null || user.getId() == 0L) ? add(user) : edit(user);
+    
+    public String save(VolunteerPlantings volunteerPlanting){
+        return (volunteerPlanting.getId() == null || volunteerPlanting.getId() == 0L) ? add(volunteerPlanting) : edit(volunteerPlanting);
     }
+    
+    private String add(VolunteerPlantings volunteerPlanting){
+        String queryAddVolunteer = "INSERT INTO volunteerPlantings(volunteer, headInstitutionLand, institution) VALUES (?, ?, ?)";
 
-    private String add(Users user){
-        Addresses address = user.getUserAddress();
+        try(Connection connection = databaseConnection.getConnection()){
+            connection.setAutoCommit(false); 
 
-        if(address == null){
-            return "Erro: endereço não informado";
-        }
+            try(PreparedStatement preparedStatement = connection.prepareStatement(queryAddVolunteer, PreparedStatement.RETURN_GENERATED_KEYS)){
+                preparedStatement.setLong(1, volunteerPlanting.getVolunteer().getId());
+                preparedStatement.setNull(2, java.sql.Types.INTEGER);
+                preparedStatement.setLong(3, volunteerPlanting.getInstitution().getId());
 
-        String resultAddress = new AddressesDao().save(address);
+                int result = preparedStatement.executeUpdate();
 
-        if(!resultAddress.contains("sucesso")){
-            return resultAddress;
-        }
+                if(result == 1){
+                    ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
+                    
+                    if(generatedKeys.next()){
+                        volunteerPlanting.setId(generatedKeys.getLong(1));
+                    }
 
-        String queryAddUser = "INSERT INTO users(userAddress, institution, fullName, userName, userEmail, userPassword, isAdmin) VALUES (?, ?, ?, ?, ?, ?, ?)";
+                    connection.commit();
+                    return "Voluntário adicionado com sucesso";
+                }else{
+                    connection.rollback();
+                    return "Erro ao adicionar o voluntário";
+                }
 
-        try(Connection connection = databaseConnection.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(queryAddUser)){
-            BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-            
-            String passwordEncryptred = passwordEncoder.encode(user.getUserPassword());
-            
-            preparedStatement.setLong(1, address.getId());
-            preparedStatement.setLong(2, user.getInstitution().getId());
-            preparedStatement.setString(3, user.getFullName());
-            preparedStatement.setString(4, user.getUserName());
-            preparedStatement.setString(5, user.getUserEmail());
-            preparedStatement.setString(6, passwordEncryptred);
-            
-            if(user.getIsAdmin() == null){
-                preparedStatement.setNull(7, java.sql.Types.INTEGER);
-            }else{
-                preparedStatement.setInt(7, user.getIsAdmin());
+            }catch(SQLException e){
+                connection.rollback();
+                return "Erro SQL ao adicionar voluntário: " + e.getMessage();
             }
-
-            int result = preparedStatement.executeUpdate();
-
-            if(result == 1){
-                return "Usuário adicionado com sucesso";
-            }else{
-                return "Erro ao adicionar o usuário";
-            }
-
         }catch(SQLException e){
-            return "Erro SQL ao adicionar usuário: " + e.getMessage();
+            return "Erro ao conectar ou finalizar transação: " + e.getMessage();
         }finally{
             databaseConnection.closeConnection();
         }
     }
+    
+    private String edit(VolunteerPlantings volunteerPlanting){
+        String queryEditVolunteer = "UPDATE volunteerPlantings SET volunteer = ?, headInstitutionLand = ?, institution = ? WHERE id = ?";
 
-    private String edit(Users user){
-        Addresses address = user.getUserAddress();
+        try(Connection connection = databaseConnection.getConnection()){
+            connection.setAutoCommit(false);
 
-        if(address == null){
-            return "Erro: endereço não informado";
-        }
+            try(PreparedStatement preparedStatement = connection.prepareStatement(queryEditVolunteer)){
+                preparedStatement.setLong(1, volunteerPlanting.getVolunteer().getId());
+                preparedStatement.setNull(2, java.sql.Types.INTEGER);
+                preparedStatement.setLong(3, volunteerPlanting.getInstitution().getId());
+                preparedStatement.setLong(4, volunteerPlanting.getId());
 
-        String resultAddress = new AddressesDao().save(address);
+                int result = preparedStatement.executeUpdate();
 
-        if(!resultAddress.contains("sucesso")){
-            return resultAddress;
-        }
+                if(result == 1){
+                    connection.commit();
+                    return "Voluntário editado com sucesso";
+                }else{
+                    connection.rollback();
+                    return "Erro ao editar o voluntário";
+                }
 
-        String queryUpdateUser = "UPDATE users SET userAddress = ?, institution = ?, fullName = ?, userName = ?, userEmail = ?, userPassword = ? WHERE id = ?";
-
-        try(Connection connection = databaseConnection.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(queryUpdateUser)){
-            BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-            
-            String passwordEncryptred = passwordEncoder.encode(user.getUserPassword());
-            
-            preparedStatement.setLong(1, address.getId());
-            preparedStatement.setLong(2, user.getInstitution().getId());
-            preparedStatement.setString(3, user.getFullName());
-            preparedStatement.setString(4, user.getUserName());
-            preparedStatement.setString(5, user.getUserEmail());
-            preparedStatement.setString(6, passwordEncryptred);
-            preparedStatement.setLong(8, user.getId());
-
-            int result = preparedStatement.executeUpdate();
-
-            if(result == 1){
-                return "Usuário editado com sucesso";
-            }else{
-                return "Erro ao editar o usuário";
+            }catch(SQLException e){
+                connection.rollback();
+                return "Erro SQL ao editar voluntário: " + e.getMessage();
             }
-
         }catch(SQLException e){
-            return "Erro SQL ao editar usuário: " + e.getMessage();
+            return "Erro ao conectar ou finalizar transação: " + e.getMessage();
         }finally{
             databaseConnection.closeConnection();
         }
     }
-
-    public List<Users> searchAllUsers(Long institutionId){
+    
+    public List<Users> searchAllVolunteers(Long institutionId){
        String querySearch = "SELECT " +
         "    user.id AS id, " +
         "    user.fullName AS fullName, " +
@@ -149,8 +128,8 @@ public class UsersDao{
         "INNER JOIN institutions inst ON user.institution = inst.id " +
         "WHERE user.institution = ? " +
         "  AND user.deletedAt IS NULL " +
-        "  AND user.userName IS NOT NULL " +
-        "  AND user.userPassword IS NOT NULL " +
+        "  AND user.userName IS NULL " +
+        "  AND user.userPassword IS NULL " +
         "  AND addr.deletedAt IS NULL " +
         "  AND inst.deletedAt IS NULL " +
         "  AND addr.type = 1 " +
@@ -164,11 +143,11 @@ public class UsersDao{
             ResultSet resultSet = preparedStatement.executeQuery();
 
             while(resultSet.next()){
-                usersList.add(getUserWithoutClass(resultSet));
+                usersList.add(getVolunteerWithoutClass(resultSet));
             }
 
         }catch(SQLException e){
-            System.err.println("Erro ao listar usuário: " + e.getMessage());
+            System.err.println("Erro ao listar terrenos: " + e.getMessage());
         }finally{
             databaseConnection.closeConnection();
         }
@@ -176,7 +155,7 @@ public class UsersDao{
         return usersList;
    }
     
-    public List<Users> searchAllUsersWithSearch(Long institutionId, String search){
+    public List<Users> searchAllVolunteersWithSearch(Long institutionId, String search){
         String querySearch = "SELECT " +
         "    user.id AS id, " +
         "    user.fullName AS fullName, " +
@@ -198,9 +177,8 @@ public class UsersDao{
         "INNER JOIN institutions inst ON user.institution = inst.id " +
         "WHERE user.institution = ? " +
         "  AND user.fullName LIKE ? " +
+        "  AND user.userName IS NULL " +
         "  AND user.deletedAt IS NULL " +
-        "  AND user.userName IS NOT NULL " +
-        "  AND user.userPassword IS NOT NULL " +
         "  AND addr.deletedAt IS NULL " +
         "  AND inst.deletedAt IS NULL " +
         "  AND addr.type = 1 " +
@@ -215,7 +193,7 @@ public class UsersDao{
             ResultSet resultSet = preparedStatement.executeQuery();
 
             while (resultSet.next()) {
-                usersList.add(getUserWithoutClass(resultSet));
+                usersList.add(getVolunteerWithoutClass(resultSet));
             }
 
         }catch(SQLException e){
@@ -226,71 +204,31 @@ public class UsersDao{
 
         return usersList;
     }
-
-    public Users searchUserByEmail(String email){
-        String querySearch = "SELECT * FROM users usr INNER JOIN institutions inst ON usr.institution = inst.id WHERE usr.userEmail = ? AND usr.deletedAt IS NULL AND usr.userEmail IS NOT NULL AND usr.userPassword IS NOT NULL";
-
-        try(Connection connection = databaseConnection.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(querySearch)){
-            preparedStatement.setString(1, email);
-
-            ResultSet resultSet = preparedStatement.executeQuery();
-
-            if(resultSet.next()){
-                return getUser(resultSet);
-            }
-        }catch(SQLException e){
-            System.err.println("Erro ao listar usuário por email: " + e.getMessage());
-        }finally{
-            databaseConnection.closeConnection();
-        }
-
-        return null;
-    }
     
-    public Users checkIfUserIsAdmin(Long userId){
-        String querySearch = "SELECT * FROM users usr INNER JOIN institutions inst ON usr.institution = inst.id WHERE usr.id = ? AND usr.deletedAt IS NULL AND usr.isAdmin = 1 AND inst.deletedAt IS NULL";
-
-        try(Connection connection = databaseConnection.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(querySearch)){
-            preparedStatement.setLong(1, userId);
-
-            ResultSet resultSet = preparedStatement.executeQuery();
-
-            if(resultSet.next()){
-                return getUser(resultSet);
-            }
-        }catch(SQLException e){
-            System.err.println("Erro ao listar usuário por ID: " + e.getMessage());
-        }finally{
-            databaseConnection.closeConnection();
-        }
-
-        return null;
-    }
-    
-    public String deleteUserById(Long userId){
-        String query = "UPDATE users SET deletedAt = NOW() WHERE id = ?";
+    public String deleteVolunteerById(Long volunteerId){
+        String query = "UPDATE volunteerPlantings SET deletedAt = NOW() WHERE id = ?";
 
         try(Connection connection = databaseConnection.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(query)){
 
-            preparedStatement.setLong(1, userId);
+            preparedStatement.setLong(1, volunteerId);
 
             int result = preparedStatement.executeUpdate();
 
             if(result == 1){
-                return "Usuário excluído com sucesso.";
+                return "Voluntário excluído com sucesso.";
             }else{
-                return "Erro: usuário não encontrado.";
+                return "Erro: voluntário não encontrado.";
             }
 
         }catch(SQLException e){
-            return "Erro SQL ao excluir usuário: " + e.getMessage();
+            return "Erro SQL ao excluir voluntário: " + e.getMessage();
         }finally{
             databaseConnection.closeConnection();
         }
     }
-
-    private Users getUser(ResultSet resultSet) throws SQLException{
+    
+    private Users getVolunteer(ResultSet resultSet) throws SQLException{
         Users user = new Users();
 
         user.setId(resultSet.getLong("id"));
@@ -314,7 +252,7 @@ public class UsersDao{
         return user;
     }
     
-     private Users getUserWithoutClass(ResultSet resultSet) throws SQLException{
+     private Users getVolunteerWithoutClass(ResultSet resultSet) throws SQLException{
         Users user = new Users();
         Addresses address = new Addresses();
         Cities city = new Cities();

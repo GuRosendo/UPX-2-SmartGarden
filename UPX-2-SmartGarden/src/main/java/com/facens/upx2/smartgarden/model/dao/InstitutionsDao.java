@@ -8,6 +8,7 @@ import com.facens.upx2.smartgarden.model.database.connection.DatabaseConnection;
 import com.facens.upx2.smartgarden.model.database.connection.MySQLDatabaseConnection;
 import com.facens.upx2.smartgarden.model.domain.Addresses;
 import com.facens.upx2.smartgarden.model.domain.Institutions;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -28,7 +29,7 @@ public class InstitutionsDao{
     }
 
     public String save(Institutions institution){
-        return (institution.getId() == null || institution.getId() == 0L) ? add(institution) : edit(institution);
+        return add(institution);
     }
 
     private String add(Institutions institution){
@@ -44,96 +45,79 @@ public class InstitutionsDao{
             return resultAddress;
         }
 
-        String queryAddInstitution = "INSERT INTO institutions(institutionAddress, institutionName) VALUES (?, ?)";
+        String queryAddInstitution = "INSERT INTO institutions(institutionAddress, institutionName, institutionCNPJ) VALUES (?, ?, ?)";
 
-        try(Connection connection = databaseConnection.getConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement(queryAddInstitution)){
+        try(Connection connection = databaseConnection.getConnection()){
+            connection.setAutoCommit(false); 
 
-            preparedStatement.setLong(1, address.getId());
-            preparedStatement.setString(2, institution.getInstitutionName());
+            try(PreparedStatement preparedStatement = connection.prepareStatement(queryAddInstitution, PreparedStatement.RETURN_GENERATED_KEYS)){
+                preparedStatement.setLong(1, address.getId());
+                preparedStatement.setString(2, institution.getInstitutionName());
+                preparedStatement.setString(3, institution.getInstitutionCNPJ());
 
-            int result = preparedStatement.executeUpdate();
+                int result = preparedStatement.executeUpdate();
 
-            if(result == 1){
-                return "Instituição adicionada com sucesso";
-            }else{
-                return "Erro ao adicionar instituição";
+                if(result == 1){
+                    ResultSet keys = preparedStatement.getGeneratedKeys();
+                    
+                    if(keys.next()){
+                        institution.setId(keys.getLong(1));
+                    }
+
+                    connection.commit();
+                    
+                    return "Instituição adicionada com sucesso";
+                }else{
+                    connection.rollback();
+                    
+                    return "Erro ao adicionar instituição";
+                }
+
+            }catch(SQLException e){
+                connection.rollback();
+                
+                return "Erro SQL ao adicionar instituição: " + e.getMessage();
             }
 
         }catch(SQLException e){
-            return "Erro SQL ao adicionar instituição: " + e.getMessage();
+            return "Erro ao conectar ou finalizar transação: " + e.getMessage();
         }finally{
             databaseConnection.closeConnection();
         }
     }
 
-    private String edit(Institutions institution){
-        Addresses address = institution.getInstitutionAddress();
+    public List<Institutions> searchInstitution() {
+        String query = "SELECT * FROM institutions WHERE deletedAt IS NULL";
+        List<Institutions> list = new ArrayList<>();
 
-        if(address == null){
-            return "Erro: endereço não informado";
-        }
-
-        String resultAddress = new AddressesDao().save(address);
-
-        if(!resultAddress.contains("sucesso")){
-            return resultAddress;
-        }
-
-        String queryUpdateInstitution = "UPDATE institutions SET institutionAddress = ?, institutionName = ? WHERE id = ?";
-
-        try(Connection connection = databaseConnection.getConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement(queryUpdateInstitution)){
-
-            preparedStatement.setLong(1, address.getId());
-            preparedStatement.setString(2, institution.getInstitutionName());
-            preparedStatement.setLong(3, institution.getId());
-
-            int result = preparedStatement.executeUpdate();
-
-            if(result == 1){
-                return "Instituição atualizada com sucesso";
-            }else{
-                return "Erro ao atualizar instituição";
+        try(PreparedStatement ps = databaseConnection.getConnection().prepareStatement(query)){
+            ResultSet rs = ps.executeQuery();
+            
+            while(rs.next()){
+                list.add(getInstitution(rs));
             }
 
-        }catch(SQLException e){
-            return "Erro SQL ao atualizar instituição: " + e.getMessage();
-        }finally{
-            databaseConnection.closeConnection();
-        }
-    }
-
-    public List<Institutions> searchInstitution(){
-        String querySearch = "SELECT * FROM institutions WHERE deletedAt IS NULL";
-        List<Institutions> institutionList = new ArrayList<>();
-
-        try(PreparedStatement preparedStatement = databaseConnection.getConnection().prepareStatement(querySearch)){
-            ResultSet resultSet = preparedStatement.executeQuery();
-
-            while(resultSet.next()){
-                institutionList.add(getInstitution(resultSet));
-            }
         }catch(SQLException e){
             System.err.println("Erro ao listar instituições: " + e.getMessage());
         }finally{
             databaseConnection.closeConnection();
         }
 
-        return institutionList;
+        return list;
     }
 
     public Institutions searchInstitutionById(Long id){
-        String querySearch = "SELECT * FROM institutions WHERE id = ? AND deletedAt IS NULL";
+        String query = "SELECT * FROM institutions WHERE id = ? AND deletedAt IS NULL";
 
-        try(PreparedStatement preparedStatement = databaseConnection.getConnection().prepareStatement(querySearch)){
-            preparedStatement.setLong(1, id);
+        try(PreparedStatement ps = databaseConnection.getConnection().prepareStatement(query)){
+            ps.setLong(1, id);
 
-            ResultSet resultSet = preparedStatement.executeQuery();
+            ResultSet rs = ps.executeQuery();
 
-            if(resultSet.next()){
-                return getInstitution(resultSet);
+            if(rs.next()){
+                return getInstitution(rs);
             }
+
         }catch(SQLException e){
             System.err.println("Erro ao buscar instituição por ID: " + e.getMessage());
         }finally{
@@ -143,19 +127,20 @@ public class InstitutionsDao{
         return null;
     }
 
-    private Institutions getInstitution(ResultSet resultSet) throws SQLException{
+    private Institutions getInstitution(ResultSet rs) throws SQLException{
         Institutions institution = new Institutions();
 
-        institution.setId(resultSet.getLong("id"));
+        institution.setId(rs.getLong("id"));
 
-        long addressId = resultSet.getLong("institutionAddress");
+        long addressId = rs.getLong("institutionAddress");
         Addresses address = new AddressesDao().searchAddressById(addressId);
 
         institution.setInstitutionAddress(address);
-        institution.setInstitutionName(resultSet.getString("institutionName"));
-        institution.setCreatedAt(resultSet.getObject("createdAt", LocalDateTime.class));
-        institution.setUpdatedAt(resultSet.getObject("updatedAt", LocalDateTime.class));
-        institution.setDeletedAt(resultSet.getObject("deletedAt", LocalDateTime.class));
+        institution.setInstitutionName(rs.getString("institutionName"));
+        institution.setInstitutionCNPJ(rs.getString("institutionCNPJ"));
+        institution.setCreatedAt(rs.getObject("createdAt", LocalDateTime.class));
+        institution.setUpdatedAt(rs.getObject("updatedAt", LocalDateTime.class));
+        institution.setDeletedAt(rs.getObject("deletedAt", LocalDateTime.class));
 
         return institution;
     }

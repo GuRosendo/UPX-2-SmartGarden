@@ -5,6 +5,7 @@
 package com.facens.upx2.smartgarden.model.domain;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 /**
@@ -19,6 +20,7 @@ public class Users{
     private String userName;
     private String userEmail;
     private String userPassword;
+    private Integer isAdmin;
     private LocalDateTime createdAt;
     private LocalDateTime deletedAt; 
     private LocalDateTime updatedAt;
@@ -26,7 +28,7 @@ public class Users{
     public Users(){
     }
 
-    public Users(Long id, Addresses userAddress, Institutions institution, String fullName, String userName, String userEmail, String userPassword, LocalDateTime createdAt, LocalDateTime deletedAt, LocalDateTime updatedAt){
+    public Users(Long id, Addresses userAddress, Institutions institution, String fullName, String userName, String userEmail, String userPassword, Integer isAdmin, LocalDateTime createdAt, LocalDateTime deletedAt, LocalDateTime updatedAt){
         this.id = id;
         this.userAddress = userAddress;
         this.institution = institution;
@@ -34,6 +36,7 @@ public class Users{
         this.userName = userName;
         this.userEmail = userEmail;
         this.userPassword = userPassword;
+        this.isAdmin = isAdmin;
         this.createdAt = createdAt;
         this.deletedAt = deletedAt;
         this.updatedAt = updatedAt;
@@ -94,6 +97,14 @@ public class Users{
     public void setUserPassword(String userPassword){
         this.userPassword = userPassword;
     }
+    
+    public Integer getIsAdmin(){
+        return isAdmin;
+    }
+
+    public void setIsAdmin(Integer isAdmin){
+        this.isAdmin = isAdmin;
+    }
 
     public LocalDateTime getCreatedAt(){
         return createdAt;
@@ -101,6 +112,16 @@ public class Users{
 
     public void setCreatedAt(LocalDateTime createdAt){
         this.createdAt = createdAt;
+    }
+    
+    public String getCreatedAtFormatted(){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        return this.createdAt.format(formatter);
+    }
+    
+    public String getCreatedAtHourFormatted(){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+        return this.createdAt.format(formatter);
     }
 
     public LocalDateTime getDeletedAt(){

@@ -25,10 +25,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
  * @author Gustavo Rosendo Cardoso
  */
 
-public class UsersDao{
+public class VolunteersDao{
     private final DatabaseConnection databaseConnection;
 
-    public UsersDao(){
+    public VolunteersDao(){
         this.databaseConnection = new MySQLDatabaseConnection();
     }
 
@@ -49,25 +49,15 @@ public class UsersDao{
             return resultAddress;
         }
 
-        String queryAddUser = "INSERT INTO users(userAddress, institution, fullName, userName, userEmail, userPassword, isAdmin) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String queryAddUser = "INSERT INTO users(userAddress, institution, fullName, userEmail) VALUES (?, ?, ?, ?)";
 
         try(Connection connection = databaseConnection.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(queryAddUser)){
             BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-            
-            String passwordEncryptred = passwordEncoder.encode(user.getUserPassword());
-            
+                        
             preparedStatement.setLong(1, address.getId());
             preparedStatement.setLong(2, user.getInstitution().getId());
             preparedStatement.setString(3, user.getFullName());
-            preparedStatement.setString(4, user.getUserName());
-            preparedStatement.setString(5, user.getUserEmail());
-            preparedStatement.setString(6, passwordEncryptred);
-            
-            if(user.getIsAdmin() == null){
-                preparedStatement.setNull(7, java.sql.Types.INTEGER);
-            }else{
-                preparedStatement.setInt(7, user.getIsAdmin());
-            }
+            preparedStatement.setString(4, user.getUserEmail());
 
             int result = preparedStatement.executeUpdate();
 
@@ -97,7 +87,7 @@ public class UsersDao{
             return resultAddress;
         }
 
-        String queryUpdateUser = "UPDATE users SET userAddress = ?, institution = ?, fullName = ?, userName = ?, userEmail = ?, userPassword = ? WHERE id = ?";
+        String queryUpdateUser = "UPDATE users SET userAddress = ?, institution = ?, fullName = ?, userEmail = ? WHERE id = ?";
 
         try(Connection connection = databaseConnection.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(queryUpdateUser)){
             BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
@@ -107,10 +97,8 @@ public class UsersDao{
             preparedStatement.setLong(1, address.getId());
             preparedStatement.setLong(2, user.getInstitution().getId());
             preparedStatement.setString(3, user.getFullName());
-            preparedStatement.setString(4, user.getUserName());
-            preparedStatement.setString(5, user.getUserEmail());
-            preparedStatement.setString(6, passwordEncryptred);
-            preparedStatement.setLong(8, user.getId());
+            preparedStatement.setString(4, user.getUserEmail());
+            preparedStatement.setLong(5, user.getId());
 
             int result = preparedStatement.executeUpdate();
 
@@ -127,7 +115,7 @@ public class UsersDao{
         }
     }
 
-    public List<Users> searchAllUsers(Long institutionId){
+    public List<Users> searchAllVolunteers(Long institutionId){
        String querySearch = "SELECT " +
         "    user.id AS id, " +
         "    user.fullName AS fullName, " +
@@ -149,8 +137,8 @@ public class UsersDao{
         "INNER JOIN institutions inst ON user.institution = inst.id " +
         "WHERE user.institution = ? " +
         "  AND user.deletedAt IS NULL " +
-        "  AND user.userName IS NOT NULL " +
-        "  AND user.userPassword IS NOT NULL " +
+        "  AND user.userName IS NULL " +
+        "  AND user.userPassword IS NULL " +
         "  AND addr.deletedAt IS NULL " +
         "  AND inst.deletedAt IS NULL " +
         "  AND addr.type = 1 " +
@@ -176,7 +164,7 @@ public class UsersDao{
         return usersList;
    }
     
-    public List<Users> searchAllUsersWithSearch(Long institutionId, String search){
+    public List<Users> searchAllVolunteersWithSearch(Long institutionId, String search){
         String querySearch = "SELECT " +
         "    user.id AS id, " +
         "    user.fullName AS fullName, " +
@@ -198,9 +186,9 @@ public class UsersDao{
         "INNER JOIN institutions inst ON user.institution = inst.id " +
         "WHERE user.institution = ? " +
         "  AND user.fullName LIKE ? " +
+        "  AND user.userName IS NULL " +
+        "  AND user.userPassword IS NULL " +
         "  AND user.deletedAt IS NULL " +
-        "  AND user.userName IS NOT NULL " +
-        "  AND user.userPassword IS NOT NULL " +
         "  AND addr.deletedAt IS NULL " +
         "  AND inst.deletedAt IS NULL " +
         "  AND addr.type = 1 " +
@@ -227,8 +215,8 @@ public class UsersDao{
         return usersList;
     }
 
-    public Users searchUserByEmail(String email){
-        String querySearch = "SELECT * FROM users usr INNER JOIN institutions inst ON usr.institution = inst.id WHERE usr.userEmail = ? AND usr.deletedAt IS NULL AND usr.userEmail IS NOT NULL AND usr.userPassword IS NOT NULL";
+    public Users searchVolunteerByEmail(String email){
+        String querySearch = "SELECT * FROM users usr INNER JOIN institutions inst ON usr.institution = inst.id WHERE usr.userEmail = ? AND usr.deletedAt IS NULL AND usr.userPassword IS NULL";
 
         try(Connection connection = databaseConnection.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(querySearch)){
             preparedStatement.setString(1, email);
@@ -247,27 +235,7 @@ public class UsersDao{
         return null;
     }
     
-    public Users checkIfUserIsAdmin(Long userId){
-        String querySearch = "SELECT * FROM users usr INNER JOIN institutions inst ON usr.institution = inst.id WHERE usr.id = ? AND usr.deletedAt IS NULL AND usr.isAdmin = 1 AND inst.deletedAt IS NULL";
-
-        try(Connection connection = databaseConnection.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(querySearch)){
-            preparedStatement.setLong(1, userId);
-
-            ResultSet resultSet = preparedStatement.executeQuery();
-
-            if(resultSet.next()){
-                return getUser(resultSet);
-            }
-        }catch(SQLException e){
-            System.err.println("Erro ao listar usuário por ID: " + e.getMessage());
-        }finally{
-            databaseConnection.closeConnection();
-        }
-
-        return null;
-    }
-    
-    public String deleteUserById(Long userId){
+    public String deleteVolunteerById(Long userId){
         String query = "UPDATE users SET deletedAt = NOW() WHERE id = ?";
 
         try(Connection connection = databaseConnection.getConnection();

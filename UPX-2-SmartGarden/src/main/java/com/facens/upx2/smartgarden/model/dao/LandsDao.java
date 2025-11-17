@@ -98,7 +98,7 @@ public class LandsDao{
         String queryEditLand = "UPDATE lands SET landAddress = ?, landName = ? WHERE id = ?";
 
         try(Connection connection = databaseConnection.getConnection()){
-            connection.setAutoCommit(false); // inicia transação
+            connection.setAutoCommit(false);
 
             try(PreparedStatement preparedStatement = connection.prepareStatement(queryEditLand)){
                 preparedStatement.setLong(1, address.getId());
@@ -110,7 +110,7 @@ public class LandsDao{
                 if(result == 1){
                     connection.commit();
                     
-                    return "Terreno editado com sucesso (ID: " + land.getId() + ")";
+                    return "Terreno editado com sucesso";
                 }else{
                     connection.rollback();
                     return "Erro ao editar o terreno";
@@ -128,27 +128,29 @@ public class LandsDao{
     }
 
     public List<Lands> getInstitutionLands(Long institutionId){
-       String querySearch = "SELECT \n" +
-        "    land.id AS id,\n" +
-        "    land.landName AS landName,\n" +
-        "    addr.id AS landAddress,\n" +
-        "    addr.cep AS cep,\n" +
-        "    addr.neighborhoodName AS neighborhoodName,\n" +
-        "    addr.streetName AS streetName,\n" +
-        "    addr.number AS number,\n" +
-        "    city.id AS cityId,\n" +
-        "    city.name AS cityName,\n" +
-        "    land.createdAt AS createdAt,\n" +
-        "    land.updatedAt AS updatedAt,\n" +
-        "    land.deletedAt AS deletedAt\n" +
-        "FROM lands land\n" +
-        "INNER JOIN headInstitutionLands head ON land.id = head.land\n" +
-        "INNER JOIN addresses addr ON addr.id = land.landAddress\n" +
-        "INNER JOIN cities city ON city.id = addr.city\n" +
-        "WHERE head.institution = ?\n" +
-        "  AND head.deletedAt IS NULL\n" +
-        "  AND land.deletedAt IS NULL\n" +
-        "ORDER BY land.createdAt DESC";
+       String querySearch = "SELECT " +
+        "    land.id AS id, " +
+        "    land.landName AS landName, " +
+        "    land.createdAt AS createdAt, " +
+        "    land.updatedAt AS updatedAt, " +
+        "    land.deletedAt AS deletedAt, " +
+        "    addr.id AS landAddress, " +
+        "    addr.cep AS cep, " +
+        "    addr.neighborhoodName AS neighborhoodName, " +
+        "    addr.streetName AS streetName, " +
+        "    addr.number AS number, " +
+        "    city.id AS cityId, " +
+        "    city.name AS cityName " +
+        "FROM lands land " +
+        "INNER JOIN headInstitutionLands head ON land.id = head.land " +
+        "INNER JOIN addresses addr ON land.landAddress = addr.id " +
+        "INNER JOIN cities city ON addr.city = city.id " +
+        "WHERE head.institution = ? " +
+        "   AND head.deletedAt IS NULL " +
+        "   AND land.deletedAt IS NULL " +
+        "   AND addr.deletedAt IS NULL " +
+        "   AND addr.type = 3 " +
+        "ORDER BY land.landName ASC";
         List<Lands> landsList = new ArrayList<>();
 
         try(Connection connection = databaseConnection.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(querySearch)){
@@ -157,7 +159,7 @@ public class LandsDao{
             ResultSet resultSet = preparedStatement.executeQuery();
 
             while(resultSet.next()){
-                landsList.add(getLand(resultSet));
+                landsList.add(getLandWithoutClass(resultSet));
             }
 
         }catch(SQLException e){
@@ -170,28 +172,28 @@ public class LandsDao{
    }
     
     public List<Lands> getInstitutionLandsWithSearch(Long institutionId, String search){
-       String querySearch = "SELECT \n" +
-        "    land.id AS id,\n" +
-        "    land.landName AS landName,\n" +
-        "    addr.id AS landAddress,\n" +
-        "    addr.cep AS cep,\n" +
-        "    addr.neighborhoodName AS neighborhoodName,\n" +
-        "    addr.streetName AS streetName,\n" +
-        "    addr.number AS number,\n" +
-        "    city.id AS cityId,\n" +
-        "    city.name AS cityName,\n" +
-        "    land.createdAt AS createdAt,\n" +
-        "    land.updatedAt AS updatedAt,\n" +
-        "    land.deletedAt AS deletedAt\n" +
-        "FROM lands land\n" +
-        "INNER JOIN headInstitutionLands head ON land.id = head.land\n" +
-        "INNER JOIN addresses addr ON addr.id = land.landAddress\n" +
-        "INNER JOIN cities city ON city.id = addr.city\n" +
-        "WHERE land.landName LIKE ?\n" +
-        "  AND head.institution = ?\n" +
-        "  AND head.deletedAt IS NULL\n" +
-        "  AND land.deletedAt IS NULL\n" +
-        "ORDER BY land.createdAt DESC";
+       String querySearch = "SELECT " +
+        "    land.id AS id, " +
+        "    land.landName AS landName, " +
+        "    land.createdAt AS createdAt, " +
+        "    land.updatedAt AS updatedAt, " +
+        "    land.deletedAt AS deletedAt, " +
+        "    addr.id AS landAddress, " +
+        "    addr.cep AS cep, " +
+        "    addr.neighborhoodName AS neighborhoodName, " +
+        "    addr.streetName AS streetName," +
+        "    addr.number AS number, " +
+        "    city.id AS cityId, " +
+        "    city.name AS cityName " +
+        "FROM lands land " +
+        "INNER JOIN headInstitutionLands head ON land.id = head.land " +
+        "INNER JOIN addresses addr ON land.landAddress = addr.id " +
+        "INNER JOIN cities city ON addr.city = city.id " +
+        "WHERE land.landName LIKE ? " +
+        "  AND head.institution = ? " +
+        "  AND head.deletedAt IS NULL " +
+        "  AND land.deletedAt IS NULL " +
+        "ORDER BY land.landName ASC";
         List<Lands> landsList = new ArrayList<>();
 
         try(Connection connection = databaseConnection.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(querySearch)){

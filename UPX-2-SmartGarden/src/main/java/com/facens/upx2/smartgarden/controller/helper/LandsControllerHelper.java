@@ -29,8 +29,8 @@ public class LandsControllerHelper{
             tableModel.addRow(new Object[]{
                 land.getId(),
                 land.getLandName(),
-                land.getLandAddress().getCity().getName(),
                 land.getLandAddress().getCEP(),
+                land.getLandAddress().getCity().getName(),
                 land.getLandAddress().getNeighborhoodName(),
                 land.getLandAddress().getStreetName(),
                 land.getLandAddress().getNumber(),

@@ -14,14 +14,16 @@ public class VolunteerPlantings{
     private Long id;
     private Users volunteer;
     private HeadInstitutionLands headInstitutionLand;
+    private Institutions institution;
     private LocalDateTime createdAt;
     private LocalDateTime deletedAt; 
     private LocalDateTime updatedAt; 
 
-    public VolunteerPlantings(Long id, Users volunteer, HeadInstitutionLands headInstitutionLand, LocalDateTime createdAt, LocalDateTime deletedAt, LocalDateTime updatedAt){
+    public VolunteerPlantings(Long id, Users volunteer, HeadInstitutionLands headInstitutionLand, Institutions institution, LocalDateTime createdAt, LocalDateTime deletedAt, LocalDateTime updatedAt){
         this.id = id;
         this.volunteer = volunteer;
         this.headInstitutionLand = headInstitutionLand;
+        this.institution = institution;
         this.createdAt = createdAt;
         this.deletedAt = deletedAt;
         this.updatedAt = updatedAt;
@@ -49,6 +51,14 @@ public class VolunteerPlantings{
 
     public void setHeadInstitutionLand(HeadInstitutionLands headInstitutionLand){
         this.headInstitutionLand = headInstitutionLand;
+    }
+    
+    public Institutions getInstitution(){
+        return institution;
+    }
+
+    public void setInstitution(Institutions institution){
+        this.institution = institution;
     }
 
     public LocalDateTime getCreatedAt(){
