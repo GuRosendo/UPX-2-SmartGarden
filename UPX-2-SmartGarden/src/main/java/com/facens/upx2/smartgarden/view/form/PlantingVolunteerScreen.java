@@ -22,11 +22,12 @@ public class PlantingVolunteerScreen extends javax.swing.JFrame {
     private VolunteerPlantingsController volunteerPlantingsController;
     private VolunteerPlantingsControllerHelper volunteerPlantingsControllerHelper;
     private Long institutionId;
+    private Long plantingId;
         
     /**
      * Creates new form CropTypesScreen
      */
-    public PlantingVolunteerScreen(long institutionId){
+    public PlantingVolunteerScreen(long institutionId, long plantingId){
         setUndecorated(true); 
         initComponents();  
                 
@@ -39,7 +40,7 @@ public class PlantingVolunteerScreen extends javax.swing.JFrame {
         
         this.institutionId = institutionId;
         
-        this.loadData(this.institutionId);
+        this.loadData(this.institutionId, this.plantingId);
     }
 
     /**
@@ -146,7 +147,7 @@ public class PlantingVolunteerScreen extends javax.swing.JFrame {
     }//GEN-LAST:event_jSearchButtonActionPerformed
 
     private void jDeleteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jDeleteButtonActionPerformed
-        volunteerPlantingsController.deleteSelectedVolunteer(this.institutionId);
+        volunteerPlantingsController.deleteSelectedVolunteer(this.institutionId, this.plantingId);
     }//GEN-LAST:event_jDeleteButtonActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -162,12 +163,13 @@ public class PlantingVolunteerScreen extends javax.swing.JFrame {
     private javax.swing.JTable jTable1;
     // End of variables declaration//GEN-END:variables
 
-    private void loadData(long institutionId){
-        this.volunteerPlantingsController.loadVolunteers(institutionId);
+    private void loadData(Long institutionId, Long plantingId){
+        this.volunteerPlantingsController.loadVolunteers(institutionId, plantingId);
+        this.volunteerPlantingsController.loadVolunteersForComboBox(institutionId);
     }
     
-    private void loadDataWithSearch(long institutionId, String search){
-        this.volunteerPlantingsController.loadVolunteersWithSearch(institutionId, search);
+    private void loadDataWithSearch(Long institutionId, String search){
+        this.volunteerPlantingsController.loadVolunteersWithSearch(institutionId, search, this.plantingId);
     }
 
     public JButton getjButtonBack() {

@@ -105,7 +105,7 @@ public class VolunteersPlantingsDao{
             databaseConnection.closeConnection();
         }
     }
-    
+        
     public String deleteVolunteerById(Long volunteerId){
         String query = "UPDATE volunteerPlantings SET deletedAt = NOW() WHERE id = ?";
 

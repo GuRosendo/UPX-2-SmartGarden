@@ -21,13 +21,13 @@ public class ComboBoxHelperVolunteers{
         this.plantingVolunteerScreen = plantingVolunteerScreen;
     }
     
-    public void populateVolunteersComboBox(List<Users> users){
+    public void populateVolunteersComboBox(List<Users> volunteers){
         DefaultComboBoxModel<ComboItem> comboBoxModel = new DefaultComboBoxModel<>();
 
         comboBoxModel.addElement(new ComboItem(0, ""));
 
-        for(Users user : users){
-            comboBoxModel.addElement(new ComboItem(user.getId(), user.getFullName()));
+        for(Users volunteer : volunteers){
+            comboBoxModel.addElement(new ComboItem(volunteer.getId(), volunteer.getFullName()));
         }
 
         this.plantingVolunteerScreen.getjComboBoxVolunteers().setModel(comboBoxModel);

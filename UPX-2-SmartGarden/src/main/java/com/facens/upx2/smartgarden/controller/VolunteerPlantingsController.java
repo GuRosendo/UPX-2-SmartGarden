@@ -4,21 +4,11 @@
  */
 package com.facens.upx2.smartgarden.controller;
 
-import com.facens.upx2.smartgarden.controller.helper.ComboBoxHelper;
+import com.facens.upx2.smartgarden.controller.helper.ComboBoxHelperVolunteers;
 import com.facens.upx2.smartgarden.controller.helper.DialogHelper;
 import com.facens.upx2.smartgarden.controller.helper.VolunteerPlantingsControllerHelper;
-import com.facens.upx2.smartgarden.model.dao.CitiesDao;
-import com.facens.upx2.smartgarden.model.dao.CountriesDao;
-import com.facens.upx2.smartgarden.model.dao.CropTypesDao;
-import com.facens.upx2.smartgarden.model.dao.InstitutionsDao;
-import com.facens.upx2.smartgarden.model.dao.StatesDao;
-import com.facens.upx2.smartgarden.model.dao.UsersDao;
+import com.facens.upx2.smartgarden.model.dao.VolunteersDao;
 import com.facens.upx2.smartgarden.model.dao.VolunteersPlantingsDao;
-import com.facens.upx2.smartgarden.model.domain.Addresses;
-import com.facens.upx2.smartgarden.model.domain.Cities;
-import com.facens.upx2.smartgarden.model.domain.Countries;
-import com.facens.upx2.smartgarden.model.domain.Institutions;
-import com.facens.upx2.smartgarden.model.domain.States;
 import com.facens.upx2.smartgarden.model.domain.Users;
 import com.facens.upx2.smartgarden.model.domain.VolunteerPlantings;
 import com.facens.upx2.smartgarden.view.form.PlantingVolunteerScreen;
@@ -31,35 +21,43 @@ import java.util.List;
 public class VolunteerPlantingsController{
     private final VolunteerPlantingsControllerHelper volunteerControllerHelper;
     private final PlantingVolunteerScreen volunteerScreen;
-    private final ComboBoxHelper comboBoxHelper;
+    private final ComboBoxHelperVolunteers comboBoxHelperVolunteers;
     
     public VolunteerPlantingsController(VolunteerPlantingsControllerHelper volunteerControllerHelper, PlantingVolunteerScreen volunteerScreen) {
         this.volunteerControllerHelper = volunteerControllerHelper;
         this.volunteerScreen = volunteerScreen;
-        this.comboBoxHelper = new ComboBoxHelper(this.volunteerScreen);
+        this.comboBoxHelperVolunteers = new ComboBoxHelperVolunteers(this.volunteerScreen);
     }
     
-    public void loadVolunteers(Long institutionId){
+    public void loadVolunteers(Long institutionId, Long plantingId){
         VolunteersPlantingsDao volunteersPlantingsDao = new VolunteersPlantingsDao();
         
-        //List<Users> users = VolunteersPlantingsDao.searchAllVolunteers(institutionId);
+        List<Users> users = VolunteersPlantingsDao.searchAllVolunteers(institutionId, plantingId);
         
-        //this.volunteerControllerHelper.populateTable(users);
+        this.volunteerControllerHelper.populateTable(users);
     }
     
-    public void loadVolunteersWithSearch(Long institutionId, String search){
+    public void loadVolunteersWithSearch(Long institutionId, String search, Long plantingId){
         VolunteersPlantingsDao volunteersPlantingsDao = new VolunteersPlantingsDao();
         
-        //List<VolunteerPlantings> volunteerPlantings = VolunteersPlantingsDao.searchAllVolunteersWithSearch(institutionId, search);
+        List<Users> users = VolunteersPlantingsDao.searchAllVolunteersWithSearch(institutionId, search);
         
-       // this.volunteerControllerHelper.populateTable(volunteerPlantings);
+        this.volunteerControllerHelper.populateTable(users);
+    }
+    
+    public void loadVolunteersForComboBox(Long institutionId){
+        VolunteersDao volunteersDao = new VolunteersDao();
+        
+        List<Users> volunteers = volunteersDao.searchAllVolunteers(institutionId);
+        
+        this.comboBoxHelperVolunteers.populateVolunteersComboBox(volunteers);
     }
     
     public void registerVolunteer(Long volunteerId, Long institutionId){      
         
     }
     
-    public void deleteSelectedVolunteer(Long institutionId){
+    public void deleteSelectedVolunteer(Long institutionId, Long plantingId){
         int row = this.volunteerScreen.getjTable1().getSelectedRow();
 
         if(row < 0){
@@ -85,6 +83,6 @@ public class VolunteerPlantingsController{
 
         DialogHelper.showMessage(result, this.volunteerScreen);
 
-        this.loadVolunteers(institutionId);
+        this.loadVolunteers(institutionId, plantingId);
     }
 }

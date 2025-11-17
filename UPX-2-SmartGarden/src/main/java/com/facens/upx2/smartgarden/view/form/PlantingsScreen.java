@@ -5,6 +5,7 @@
 package com.facens.upx2.smartgarden.view.form;
 
 import com.facens.upx2.smartgarden.controller.PlantingsController;
+import com.facens.upx2.smartgarden.controller.helper.DialogHelper;
 import com.facens.upx2.smartgarden.controller.helper.PlantingsControllerHelper;
 import com.facens.upx2.smartgarden.model.helper.domain.ComboItem;
 import javax.swing.JButton;
@@ -153,8 +154,18 @@ public class PlantingsScreen extends javax.swing.JFrame {
         switch(action){
             case "Adicionar Voluntario":
                 long headInstitutionLandsId = this.institutionId;
+                
+                int row = this.getjTable1().getSelectedRow();
+
+                if(row < 0){
+                    DialogHelper.showMessage("Selecione um terreno na tabela", this);
+
+                    return;
+                }
+                
+                Long plantingId = (Long) jTable1.getValueAt(row, 0);
         
-                PlantingVolunteerScreen plantingVolunteerScreen = new PlantingVolunteerScreen(headInstitutionLandsId);
+                PlantingVolunteerScreen plantingVolunteerScreen = new PlantingVolunteerScreen(headInstitutionLandsId, plantingId);
                 plantingVolunteerScreen.setVisible(true);
                 
                 break;
